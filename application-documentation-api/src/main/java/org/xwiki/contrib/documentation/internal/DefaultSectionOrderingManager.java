@@ -198,7 +198,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
             try {
                 String hqlQuery = "select sectionObject.name "
                         + "from BaseObject sectionObject, LongProperty sectionNumbering "
-                        + "where sectionObject.className =  'DocumentationApp.Code.SectionClass' "
+                        + "where sectionObject.className =  'Documentation.Code.SectionClass' "
                         + "and sectionNumbering.id.id = sectionObject.id "
                         + "and sectionNumbering.id.name = 'numbering' "
                         + "and sectionNumbering.value = :nextNumbering "
@@ -281,7 +281,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
             // Select every child elements of this space
             String hqlQuery = "select subSectionObject.name, subSectionNumbering.value "
                     + "from BaseObject subSectionObject, LongProperty subSectionNumbering "
-                    + "where subSectionObject.className = 'DocumentationApp.Code.SectionClass' "
+                    + "where subSectionObject.className = 'Documentation.Code.SectionClass' "
                     + "and subSectionNumbering.id.id = subSectionObject.id "
                     + "and subSectionNumbering.id.name = 'numbering' "
                     + "and subSectionObject.name like :parentSpace "

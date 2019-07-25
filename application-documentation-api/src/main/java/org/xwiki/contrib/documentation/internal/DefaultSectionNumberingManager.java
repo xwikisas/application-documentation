@@ -63,7 +63,7 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
     {
         try {
             String hqlQuery = "select sectionObject.name from BaseObject sectionObject "
-                    + "where sectionObject.className = 'DocumentationApp.Code.SectionClass' "
+                    + "where sectionObject.className = 'Documentation.Code.SectionClass' "
                     + "and sectionObject.name = :docName";
             return queryManager.createQuery(hqlQuery, Query.HQL)
                     .bindValue("docName", entityReferenceSerializer.serialize(documentReference))
