@@ -33,6 +33,8 @@
   <properties>
     <!-- Name to display by the Extension Manager -->
     <xwiki.extension.name>Documentation Application UI</xwiki.extension.name>
+    <!-- Ensure that the pages cannot be easily modified -->
+    <xwiki.xar.protection>deny</xwiki.xar.protection>
   </properties>
   <build>
     <extensions>
