@@ -51,7 +51,7 @@ import com.xpn.xwiki.objects.BaseObject;
 @Singleton
 public class DefaultDocumentationBridge implements DocumentationBridge
 {
-    private static final List<String> PARENT_PATH = Arrays.asList("DocumentationApp", "Code");
+    private static final List<String> PARENT_PATH = Arrays.asList("Documentation", "Code");
 
     private static final LocalDocumentReference SECTION_CLASS = new LocalDocumentReference(PARENT_PATH, "SectionClass");
 

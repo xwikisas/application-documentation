@@ -202,7 +202,9 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                         + "and sectionNumbering.id.id = sectionObject.id "
                         + "and sectionNumbering.id.name = 'numbering' "
                         + "and sectionNumbering.value = :nextNumbering "
-                        + "and sectionObject.name like :currentSpace";
+                        + "and sectionObject.name like :currentSpace "
+                        // Exclude everything from the code space
+                        + "and sectionObject.name not like 'Documentation.Code.%'";
 
                 List<String> results = queryManager.createQuery(hqlQuery, Query.HQL)
                         .bindValue("nextNumbering", sectionNumbering)
@@ -282,7 +284,9 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                     + "where subSectionObject.className = 'DocumentationApp.Code.SectionClass' "
                     + "and subSectionNumbering.id.id = subSectionObject.id "
                     + "and subSectionNumbering.id.name = 'numbering' "
-                    + "and subSectionObject.name like :parentSpace";
+                    + "and subSectionObject.name like :parentSpace "
+                    // Exclude everything from the code space
+                    + "and subSectionObject.name not like 'Documentation.Code.%'";
             return queryManager.createQuery(hqlQuery, Query.HQL)
                     .bindValue("parentSpace",
                             String.format(SPACE_FILTER_FORMAT,
