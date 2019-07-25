@@ -35,17 +35,6 @@
     <xwiki.extension.name>Documentation Application UI</xwiki.extension.name>
   </properties>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <!-- Try releasing with release plugin 2.5 since it has failed with the lastest
-               (seems there are a couple of bugs) -->
-          <version>2.5</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <extensions>
       <extension>
         <groupId>org.xwiki.commons</groupId>

@@ -1,1 +1,2 @@
-org.xwiki.contrib.documentation.internal.DefaultDocumentationNumberingManager
+org.xwiki.contrib.documentation.internal.DefaultSectionNumberingManager
+org.xwiki.contrib.documentation.internal.DefaultSectionOrderingManager

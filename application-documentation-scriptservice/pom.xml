@@ -36,6 +36,12 @@
       <artifactId>application-documentation-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.xwiki.contrib.documentation</groupId>
+      <artifactId>application-documentation-bridge</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 </project>
 
