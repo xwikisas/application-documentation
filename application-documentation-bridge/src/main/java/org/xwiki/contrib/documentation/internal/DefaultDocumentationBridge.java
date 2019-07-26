@@ -157,7 +157,7 @@ public class DefaultDocumentationBridge implements DocumentationBridge
 
     private void setSection(BaseObject object, String property, DocumentReference reference)
     {
-        object.setStringValue(PARENT_SECTION_PROPERTY,
+        object.setStringValue(property,
                 (reference != null)
                         ? entityReferenceSerializer.serialize(reference)
                         : StringUtils.EMPTY);

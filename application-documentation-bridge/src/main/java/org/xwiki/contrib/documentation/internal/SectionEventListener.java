@@ -82,19 +82,24 @@ public class SectionEventListener implements EventListener
     public void onEvent(Event event, Object source, Object data)
     {
         if (event instanceof DocumentDeletedEvent) {
-            // Update metadata
-            updateNextAndPreviousSections((XWikiDocument) source, (XWikiContext) data);
-        }
-    }
+            XWikiDocument document = (XWikiDocument) source;
+            XWikiContext xContext = (XWikiContext) data;
 
-    private void updateNextAndPreviousSections(XWikiDocument document, XWikiContext xContext) {
-        try {
-            // Get the next document reference
             DocumentReference classReference =
                     new DocumentReference(
                             DefaultDocumentationBridge.SECTION_CLASS,
                             new WikiReference(xContext.getWikiId()));
 
+            if (document.getOriginalDocument().getXObjects(classReference).size() > 0) {
+                updateNextAndPreviousSections(document.getOriginalDocument(), xContext, classReference);
+            }
+        }
+    }
+
+    private void updateNextAndPreviousSections(XWikiDocument document, XWikiContext xContext,
+            DocumentReference classReference) {
+        try {
+            // Get the next document reference
             DocumentReference previousSection = documentReferenceResolver.resolve(
                     document.getStringValue(classReference, DefaultDocumentationBridge.PREVIOUS_SECTION_PROPERTY));
             DocumentReference nextSection = documentReferenceResolver.resolve(
