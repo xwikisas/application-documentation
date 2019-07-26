@@ -40,16 +40,36 @@ public interface DocumentationBridge
     long getNumbering(DocumentReference documentReference) throws DocumentationException;
 
     /**
-     * Will set the siblings of the given document to new values. If the siblings are null, then the property will
-     * be set as blank.
+     * Will set the previous / next sections of the given document to new values.
+     * If the sections are null, then the property will be set as blank.
      *
      * @param documentReference the document to update
-     * @param previousSibling the previous sibling
-     * @param nextSibling the next sibling
+     * @param previousSection the previous section
+     * @param nextSection the next section
      * @throws DocumentationException if an error happens
      */
-    void setSiblings(DocumentReference documentReference, DocumentReference previousSibling,
-            DocumentReference nextSibling) throws DocumentationException;
+    void setPreviousAndNextSections(DocumentReference documentReference, DocumentReference previousSection,
+            DocumentReference nextSection) throws DocumentationException;
+
+    /**
+     * Will set the previous section of the given document to a new value.
+     *
+     * @param documentReference the document to update
+     * @param previousSection the previous section
+     * @throws DocumentationException if an error happens
+     */
+    void setPreviousSection(DocumentReference documentReference, DocumentReference previousSection)
+            throws DocumentationException;
+
+    /**
+     * Will set the next section of the given document to a new value.
+     *
+     * @param documentReference the document to update
+     * @param nextSection the next section
+     * @throws DocumentationException if an error happens
+     */
+    void setNextSection(DocumentReference documentReference, DocumentReference nextSection)
+            throws DocumentationException;
 
     /**
      * Will set the parent section of the given document to the given parentSection. If the parentSection is null,

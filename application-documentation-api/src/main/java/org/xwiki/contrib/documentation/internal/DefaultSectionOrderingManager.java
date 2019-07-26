@@ -86,7 +86,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
         DocumentReference previousSection = computePreviousSection(documentReference);
         DocumentReference nextSection = computeNextSection(documentReference);
 
-        documentationBridge.setSiblings(documentReference, previousSection, nextSection);
+        documentationBridge.setPreviousAndNextSections(documentReference, previousSection, nextSection);
     }
 
     @Override
