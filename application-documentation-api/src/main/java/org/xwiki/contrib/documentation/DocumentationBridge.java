@@ -50,4 +50,14 @@ public interface DocumentationBridge
      */
     void setSiblings(DocumentReference documentReference, DocumentReference previousSibling,
             DocumentReference nextSibling) throws DocumentationException;
+
+    /**
+     * Will set the parent section of the given document to the given parentSection. If the parentSection is null,
+     * then the property will be set as blank.
+     *
+     * @param documentReference the document to use
+     * @param parentSection the document parent section
+     * @throws DocumentationException if an error happens
+     */
+    void setParent(DocumentReference documentReference, DocumentReference parentSection) throws DocumentationException;
 }

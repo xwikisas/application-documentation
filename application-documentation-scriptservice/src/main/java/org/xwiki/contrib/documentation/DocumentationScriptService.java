@@ -45,6 +45,9 @@ public class DocumentationScriptService implements ScriptService
     private SectionOrderingManager sectionOrderingManager;
 
     @Inject
+    private SectionParentManager sectionParentManager;
+
+    @Inject
     private DocumentAccessBridge documentAccessBridge;
 
     /**
@@ -61,6 +64,14 @@ public class DocumentationScriptService implements ScriptService
     public SectionOrderingManager getOrderingManager()
     {
         return this.sectionOrderingManager;
+    }
+
+    /**
+     * @return the {@link SectionParentManager}
+     */
+    public SectionParentManager getParentManager()
+    {
+        return this.sectionParentManager;
     }
 
     /**
@@ -84,8 +95,16 @@ public class DocumentationScriptService implements ScriptService
     /**
      * @throws DocumentationException if an error happens
      */
-    public void computeSiblings() throws DocumentationException
+    public void computePreviousAndNextSections() throws DocumentationException
     {
         sectionOrderingManager.computePreviousAndNextSections(documentAccessBridge.getCurrentDocumentReference());
+    }
+
+    /**
+     * @throws DocumentationException if an error happens
+     */
+    public void computeParentSection() throws DocumentationException
+    {
+        sectionParentManager.computeParentSection(documentAccessBridge.getCurrentDocumentReference());
     }
 }

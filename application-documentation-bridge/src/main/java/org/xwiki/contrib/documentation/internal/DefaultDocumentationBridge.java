@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 
@@ -61,11 +62,13 @@ public class DefaultDocumentationBridge implements DocumentationBridge
 
     private static final String NEXT_SECTION_PROPERTY = "nextSection";
 
+    private static final String PARENT_SECTION_PROPERTY = "parentSection";
 
     @Inject
     private Provider<XWikiContext> xContextProvider;
 
     @Inject
+    @Named("local")
     private EntityReferenceSerializer<String> entityReferenceSerializer;
 
     @Override
@@ -98,12 +101,12 @@ public class DefaultDocumentationBridge implements DocumentationBridge
                     new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
 
             obj.setStringValue(PREVIOUS_SECTION_PROPERTY,
-                    (previousSibling == null)
+                    (previousSibling != null)
                             ? entityReferenceSerializer.serialize(previousSibling)
                             : StringUtils.EMPTY);
 
             obj.setStringValue(NEXT_SECTION_PROPERTY,
-                    (nextSibling == null)
+                    (nextSibling != null)
                             ? entityReferenceSerializer.serialize(nextSibling)
                             : StringUtils.EMPTY);
 
@@ -111,6 +114,30 @@ public class DefaultDocumentationBridge implements DocumentationBridge
         } catch (XWikiException e) {
             throw new DocumentationException(
                     String.format("Failed to save siblings for document [%s].", documentReference));
+        }
+    }
+
+    @Override
+    public void setParent(DocumentReference documentReference, DocumentReference parentSection)
+            throws DocumentationException
+    {
+        try {
+            XWikiContext xContext = xContextProvider.get();
+            XWiki xwiki = xContext.getWiki();
+            XWikiDocument doc = xwiki.getDocument(documentReference, xContext);
+
+            BaseObject obj = doc.getXObject(
+                    new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+
+            obj.setStringValue(PARENT_SECTION_PROPERTY,
+                    (parentSection != null)
+                            ? entityReferenceSerializer.serialize(parentSection)
+                            : StringUtils.EMPTY);
+
+            xwiki.saveDocument(doc, "Parent section update", true, xContext);
+        } catch (XWikiException e) {
+            throw new DocumentationException(
+                    String.format("Failed to save parent section for document [%s].", documentReference));
         }
     }
 }
