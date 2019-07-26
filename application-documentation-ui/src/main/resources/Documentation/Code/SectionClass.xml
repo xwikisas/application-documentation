@@ -102,6 +102,32 @@
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.NumberClass</classType>
     </numbering>
+    <parentSection>
+      <cache>0</cache>
+      <classname/>
+      <customDisplay/>
+      <defaultValue/>
+      <disabled>0</disabled>
+      <displayType>input</displayType>
+      <hint/>
+      <idField/>
+      <multiSelect>0</multiSelect>
+      <name>parentSection</name>
+      <number>6</number>
+      <picker>1</picker>
+      <prettyName>Parent Section</prettyName>
+      <relationalStorage>0</relationalStorage>
+      <separator> </separator>
+      <separators/>
+      <size>1</size>
+      <sort/>
+      <sql/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <valueField/>
+      <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
+    </parentSection>
     <previousSection>
       <cache>0</cache>
       <classname/>
