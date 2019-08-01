@@ -32,8 +32,11 @@ import org.xwiki.bridge.event.DocumentDeletedEvent;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.contrib.documentation.DocumentationBridge;
 import org.xwiki.contrib.documentation.DocumentationException;
+import org.xwiki.contrib.documentation.SectionNumberingManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.model.reference.EntityReference;
+import org.xwiki.model.reference.SpaceReference;
 import org.xwiki.model.reference.WikiReference;
 import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
@@ -59,6 +62,9 @@ public class SectionEventListener implements EventListener
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private SectionNumberingManager sectionNumberingManager;
 
     @Inject
     private DocumentationBridge documentationBridge;
@@ -91,13 +97,13 @@ public class SectionEventListener implements EventListener
                             new WikiReference(xContext.getWikiId()));
 
             if (document.getOriginalDocument().getXObjects(classReference).size() > 0) {
-                updateNextAndPreviousSections(document.getOriginalDocument(), xContext, classReference);
+                updateNextAndPreviousSections(document.getOriginalDocument(), classReference);
+                updateSpaceNumbering(document.getOriginalDocument());
             }
         }
     }
 
-    private void updateNextAndPreviousSections(XWikiDocument document, XWikiContext xContext,
-            DocumentReference classReference) {
+    private void updateNextAndPreviousSections(XWikiDocument document, DocumentReference classReference) {
         try {
             // Get the next document reference
             DocumentReference previousSection = documentReferenceResolver.resolve(
@@ -109,6 +115,21 @@ public class SectionEventListener implements EventListener
             documentationBridge.setNextSection(previousSection, nextSection);
         } catch (DocumentationException e) {
             logger.error("Failed to update previous and next sections for document {} : {}", document, e);
+        }
+    }
+
+    private void updateSpaceNumbering(XWikiDocument document) {
+        try {
+            // Compute the reference of the parent document.
+            EntityReference parentSpaceReference = document.getDocumentReference().getParent().getParent();
+
+            if (parentSpaceReference instanceof SpaceReference) {
+                sectionNumberingManager.recomputeNumberingsFromParentSection(
+                        new DocumentReference("WebHome", (SpaceReference) parentSpaceReference));
+            }
+        } catch (DocumentationException e) {
+            logger.error("Failed to update the numbering of the other sections in the space (siblings of {}) : {}",
+                    document, e);
         }
     }
 }
