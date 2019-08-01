@@ -91,6 +91,25 @@ public class DefaultDocumentationBridge implements DocumentationBridge
     }
 
     @Override
+    public void setNumbering(DocumentReference documentReference, long numbering) throws DocumentationException
+    {
+        try {
+            XWikiContext xContext = xContextProvider.get();
+            XWiki xwiki = xContext.getWiki();
+            XWikiDocument doc = xwiki.getDocument(documentReference, xContext);
+
+            BaseObject obj = doc.getXObject(
+                    new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+            obj.setLongValue(NUMBERING_PROPERTY, numbering);
+
+            xwiki.saveDocument(doc, "Section numbering update", true, xContext);
+        } catch (XWikiException e) {
+            throw new DocumentationException(
+                    String.format("Failed to set numbering for document [%s].", documentReference));
+        }
+    }
+
+    @Override
     public void setPreviousAndNextSections(DocumentReference documentReference, DocumentReference previousSection,
             DocumentReference nextSection) throws DocumentationException
     {

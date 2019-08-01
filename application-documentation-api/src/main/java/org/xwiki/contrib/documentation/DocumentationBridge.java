@@ -40,6 +40,15 @@ public interface DocumentationBridge
     long getNumbering(DocumentReference documentReference) throws DocumentationException;
 
     /**
+     * Set the numbering of the given document.
+     *
+     * @param documentReference the document to use.
+     * @param numbering the new numbering
+     * @throws DocumentationException if something goes wrong (ie : the document has no SectionClass, for example)
+     */
+    void setNumbering(DocumentReference documentReference, long numbering) throws DocumentationException;
+
+    /**
      * Will set the previous / next sections of the given document to new values.
      * If the sections are null, then the property will be set as blank.
      *

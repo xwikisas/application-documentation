@@ -19,6 +19,8 @@
  */
 package org.xwiki.contrib.documentation.internal;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -28,6 +30,7 @@ import org.xwiki.contrib.documentation.DocumentationBridge;
 import org.xwiki.contrib.documentation.DocumentationException;
 import org.xwiki.contrib.documentation.SectionNumberingManager;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.SpaceReference;
@@ -48,6 +51,20 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
 {
     private static final String WEB_HOME = "WebHome";
 
+    private static final String PARENT_DOCUMENT = "parentDocument";
+
+    private static final String SELECT_OBJ_NAME_NUMBERING_VALUE = "select obj.name, numbering.value ";
+
+    private static final String FROM_OBJ_PARENT_NUMBERING = "form BaseObject obj, "
+            + "StringProperty parent, LongProperty numbering ";
+
+    private static final String WHERE_OBJ_CLASSNAME_SECTIONCLASS = "where obj.className = "
+            + "'Documentation.Code.SectionClass' ";
+
+    private static final String PARENT_VALUE_EQUALS = "and parent.value = :" + PARENT_DOCUMENT + " ";
+
+    private static final String ORDER_BY_NUMBERING_ASC = "order by numbering.value asc";
+
     @Inject
     private QueryManager queryManager;
 
@@ -57,6 +74,9 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
     @Inject
     @Named("local")
     private EntityReferenceSerializer<String> entityReferenceSerializer;
+
+    @Inject
+    private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Override
     public boolean isSection(DocumentReference documentReference) throws DocumentationException
@@ -132,6 +152,84 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
         } else {
             throw new DocumentationException(
                     String.format("The given sibling [%s] is not a section.", previousSiblingReference));
+        }
+    }
+
+    @Override
+    public void recomputeNumberingsFromSection(DocumentReference documentReference)
+            throws DocumentationException
+    {
+        // We first need need to get the numbering of the current document
+        long numbering = documentationBridge.getNumbering(documentReference);
+
+        // Compute the parent reference
+        EntityReference parentSpaceReference = documentReference.getParent().getParent();
+
+        if (parentSpaceReference instanceof SpaceReference) {
+            DocumentReference parentReference = new DocumentReference(WEB_HOME,
+                    (SpaceReference) parentSpaceReference.getParent().getParent());
+
+            try {
+                // Get every document in the space
+                Query query = queryManager.createQuery(SELECT_OBJ_NAME_NUMBERING_VALUE
+                        + FROM_OBJ_PARENT_NUMBERING
+                        + WHERE_OBJ_CLASSNAME_SECTIONCLASS
+                        + "and numbering >= :numbering "
+                        + "and obj.name != :currentDocument "
+                        + PARENT_VALUE_EQUALS
+                        + ORDER_BY_NUMBERING_ASC, Query.HQL);
+
+                query.bindValue("numbering", numbering);
+                query.bindValue("currentDocument", entityReferenceSerializer.serialize(documentReference));
+                query.bindValue(PARENT_DOCUMENT, entityReferenceSerializer.serialize(parentReference));
+
+                // So, we get a list of sections
+                List<Object[]> results = query.execute();
+
+                // The first next section that we should encounter should have the numbering of the current section + 1
+                updateNumbering(results, numbering + 1);
+            } catch (QueryException e) {
+                throw new DocumentationException(
+                        String.format("Failed to fetch the list of siblings from [%s], which are children of [%s]",
+                                documentReference, parentReference), e);
+            }
+        }
+    }
+
+    @Override
+    public void recomputeNumberingsFromParentSection(DocumentReference documentReference)
+            throws DocumentationException
+    {
+        try {
+            // Get every document in the space
+            Query query = queryManager.createQuery(SELECT_OBJ_NAME_NUMBERING_VALUE
+                    + FROM_OBJ_PARENT_NUMBERING
+                    + WHERE_OBJ_CLASSNAME_SECTIONCLASS
+                    + PARENT_VALUE_EQUALS
+                    + ORDER_BY_NUMBERING_ASC, Query.HQL);
+
+            query.bindValue(PARENT_DOCUMENT, entityReferenceSerializer.serialize(documentReference));
+
+            List<Object[]> results = query.execute();
+
+            updateNumbering(results, 1L);
+        } catch (QueryException e) {
+            throw new DocumentationException(
+                    String.format("Failed to fetch the list of children of [%s]", documentReference), e);
+        }
+    }
+
+    private void updateNumbering(List<Object[]> results, long baseNumbering) throws DocumentationException
+    {
+        Long bn = baseNumbering;
+
+        for (Object[] result : results) {
+            if (!bn.equals(result[1])) {
+                documentationBridge.setNumbering(
+                        documentReferenceResolver.resolve((String) result[0]), bn);
+            }
+
+            bn++;
         }
     }
 }

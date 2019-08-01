@@ -70,4 +70,28 @@ public interface SectionNumberingManager
      * @throws DocumentationException if an error happens
      */
     long getNumberingFromSibling(DocumentReference previousSiblingReference) throws DocumentationException;
+
+    /**
+     * From the given section as a {@link DocumentReference}, updates the numbering of every section being in the
+     * same space that have a numbering superior or equal to the current section.
+     *
+     * This method actually helps when inserting a new section between two other ones : we want to shift every
+     * number of one.
+     *
+     * @param documentReference the document to use
+     * @throws DocumentationException if an error happened
+     */
+    void recomputeNumberingsFromSection(DocumentReference documentReference) throws DocumentationException;
+
+    /**
+     * From the given section as a {@link DocumentReference}, updates the numbering of every section being the first
+     * level children of the current section.
+     *
+     * This is especially useful when deleting a section : you need to make sure that the space where the section
+     * was deleted finishes with the correct numbering.
+     *
+     * @param documentReference the parent section document reference
+     * @throws DocumentationException if an error happened
+     */
+    void recomputeNumberingsFromParentSection(DocumentReference documentReference) throws DocumentationException;
 }
