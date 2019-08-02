@@ -1,0 +1,504 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.3" reference="Documentation.Code.CreateSheet" locale="">
+  <web>Documentation.Code</web>
+  <name>CreateSheet</name>
+  <language/>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1451602800000</creationDate>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1451602800000</date>
+  <contentUpdateDate>1451602800000</contentUpdateDate>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content>{{include reference="Documentation.Code.CreateMacros" /}}
+
+{{velocity}}
+== $services.localization.render('section.create.sheet.title') ==
+##
+## Calling the dedicated skin extension in order to handle the special behavior of the form elements (parent &amp; siblings selection)
+#set ($discard = $xwiki.jsx.use('Documentation.Code.CreateSheet'))
+## Custom styles used for hiding elements on the creation page
+#set ($discard = $xwiki.ssx.use('Documentation.Code.CreateSheet'))
+##
+## Hide docextra
+#set($displayDocExtra = false)
+##
+## Getting the values of the expected request parameters
+#set ($parentspace = "$!request.getParameter('spaceReference')")
+#set ($template = 'Documentation.Code.SectionTemplate')
+#set ($title = "$!request.title")
+#set ($name = "$!request.name")
+#set ($previoussibling = "$!request.previoussibling")
+##
+## In case the form was submitted with the expected non-null values, compute the URL and redirect to it
+#if($request.create == '1' &amp;&amp; "$!name" != '' &amp;&amp; "$!parentspace" != '')
+  ##
+  ## WebHome name
+  #set ($webhome = $services.model.getEntityReference('DOCUMENT', 'default').name)
+  ##
+  ## In case the parent space contains WebHome, we exclude it.
+  ## Then, we concatenate the parent with the new name, in order to build the new non-terminal document reference.
+  #set ($newparentspace = $parentspace)
+  #if($newparentspace.matches("(.*)\.${webhome}"))
+    #set ($newparentspace = $services.model.serialize($services.model.resolveDocument($newparentspace).lastSpaceReference, 'local'))
+  #end
+  ##
+  ## Starting to compute the new document reference
+  #set ($newparentspace = $newparentspace + '.' + $name)
+  #set($newDocumentReference = $services.model.createDocumentReference($webhome, $services.model.resolveSpace($newparentspace)))
+  ##
+  ## Redirect to the new location, in edit mode, with some parameters used for prefilling some fields
+  $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "template=${request.template}&amp;title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}&amp;previoussibling=${escapetool.url($!previoussibling)}"))
+#end
+##
+#set($exception = $createException)
+##
+## Check if the exception is about the non-allowed spaces for template
+#if("$!exception" != '' &amp;&amp; $exception.code == 11016)
+  &lt;div class="box errormessage"&gt;
+    #set($allowedSpaces = $createAllowedSpaces)
+    #if ($allowedSpaces.size() == 1)
+      $services.localization.render('core.create.template.allowedspace.inline', [$templateProvider, $allowedSpaces.get(0)])
+    #else
+      $services.localization.render('core.create.template.allowedspaces.inline', [$templateProvider, $allowedSpaces.toString()])
+    #end
+  &lt;/div&gt;
+#end
+##
+## Check if the exception is about the document which already exists
+#if("$!exception" != '' &amp;&amp; $exception.code == 11002)
+  &lt;div class='box errormessage'&gt;
+      ## Use the 'existingDocumentReference' context binding set by the create action for this case.
+      $services.localization.render('core.create.page.error.docalreadyexists',
+        ["${existingDocumentReference}",
+         $xwiki.getURL($existingDocumentReference, 'view', ''),
+         $xwiki.getURL($existingDocumentReference, 'edit', '')
+        ]
+      )
+  &lt;/div&gt;
+#end
+#set ($discard = $xwiki.jsfx.use('js/xwiki/create.js', {'forceSkinAction': true}))
+#set ($parentReference = $doc.documentReference.parent)
+## ---------------------------------------------------------------------------------------------------------
+## Display the form.
+## ---------------------------------------------------------------------------------------------------------
+{{html wiki="true"}}
+&lt;form action="$doc.getURL('view', 'sheet=Documentation.Code.CreateSheet')" method="post" id="create" class="xform #if($request.ajax)container#end"&gt;
+  ##
+  ## Deprecated: Pass along any received page parent.
+  &lt;input type='hidden' name='parent' value="$!{escapetool.xml($parent)}"/&gt;
+  &lt;input type='hidden' name='create' value="1"/&gt;
+  ##
+  ## The "templateprovider" field is needed by the CreateAction, even empty.
+  ## By the past, it was "xwiki/create.js" which created this field, but it was causing problems when the user sent the
+  ## form before the JavaScript code was executed.
+  &lt;input type="hidden" name="template" value="${template}" /&gt;
+  ##
+  ## Display the location picker.
+  &lt;div class='col-xs-12 col-lg-6'&gt;
+        #locationPickerCustom({
+          'id': 'target',
+          'title': {
+            'label': 'core.create.title',
+            'hint': 'core.create.title.hint',
+            'name': 'title',
+            'value': $title,
+            'placeholder': 'core.create.name.placeholder'
+          },
+          'preview': {
+            'label': 'core.create.locationPreview.label',
+            'hint': 'core.create.locationPreview.hint'
+          },
+          'parent': {
+            'label': 'core.create.spaceReference.label',
+            'hint': 'core.create.spaceReference.hint',
+            'name': 'spaceReference',
+            'reference': $parentReference,
+            'placeholder': 'core.create.spaceReference.placeholder'
+          },
+          'name': {
+            'label': 'core.create.name.label',
+            'hint': 'core.create.name.hint',
+            'name': 'name',
+            'value': $name,
+            'placeholder': 'core.create.name.placeholder'
+          }
+        })
+        ##
+        ## User Documentation : adding the option to select then previous sibling
+        #if($template == 'Documentation.Code.SectionTemplate')
+          #set($sectionChildren = $xwiki.searchDocuments(', XWikiSpace s, BaseObject o, LongProperty p where doc.translation = 0 and doc.space = s.reference and s.parent = ?  and o.name = doc.fullName and o.className = ? and p.id.id = o.id and p.name = ? and doc.fullName &lt;&gt; ? order by p.value asc', 0, 0, [$services.model.serialize($doc.documentReference.lastSpaceReference, 'local'), 'Documentation.Code.SectionClass', 'numbering', 'Documentation.Code.SectionTemplate']))
+          &lt;dl id="previous-sibling-container"&gt;
+            &lt;dt&gt;
+              &lt;label&gt;$services.localization.render('section.create.previoussibling.label')&lt;/label&gt;
+              &lt;span class="xHint"&gt;$services.localization.render('section.create.previoussibling.hint')&lt;/span&gt;
+            &lt;/dt&gt;
+            &lt;dd&gt;
+              &lt;select name="previoussibling" id="previous-sibling"&gt;
+                &lt;option value=""&gt;&lt;/option&gt;
+                #foreach($sectionChild in $sectionChildren)
+                  #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
+                  #if($services.security.authorization.hasAccess('view', $sectionChildRef))
+                    &lt;option value="$sectionChild" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$xwiki.getDocument($sectionChildRef).displayTitle&lt;/option&gt;
+                  #end
+                #end
+              &lt;/select&gt;
+            &lt;dd&gt;
+          &lt;/dl&gt;
+        #end
+        &lt;div class='buttons'&gt;
+          &lt;span class='buttonwrapper'&gt;
+            &lt;input type='submit' class='button' value="$services.localization.render('create')"/&gt;
+          &lt;/span&gt;
+          &lt;span class="buttonwrapper"&gt;
+            &lt;a class="secondary button" href="$doc.getURL()"&gt;$services.localization.render('cancel')&lt;/a&gt;
+          &lt;/span&gt;
+        &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/form&gt;
+{{/html}}
+{{/velocity}}</content>
+  <object>
+    <name>Documentation.Code.CreateSheet</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>3450c94f-e789-44c1-8ad9-58a86d3a58b0</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>require(["$!services.webjars.url('org.xwiki.platform:xwiki-platform-tree-webjar', 'require-config.min.js', {'evaluate': true})"], function() {
+ require(['jquery', 'xwiki-events-bridge', 'tree'], function($) {
+  var init = function(event, data) {
+    /*
+     * spaceReferenceInput : The input storing the target space reference,
+     * sectionCreationServiceURL : The URL to the page acting as service for the creation form.
+     * previousSibling = The select list containing siblings for the document to be created.
+     */
+    var spaceReferenceInput = $('#targetParentReference'),
+        sectionCreationServiceURL = new XWiki.Document(new XWiki.DocumentReference(this.wiki, ['Documentation', 'Code'], 'SectionCreationService')).getURL(),
+        previousSibling = $('#previous-sibling'),
+        previousSiblingsContainer = $('#previous-sibling-container');
+
+    // If there is no sibling for the current document, hide the siblings select list.
+    if(previousSiblingsContainer[0] &amp;&amp; previousSibling[0] &amp;&amp; previousSibling.children().size() &lt; 2) {
+      previousSiblingsContainer.hide();
+    }
+
+    // When the target space reference is changing, update the list of siblings.
+    spaceReferenceInput.on('input change', function(event) {
+      if(previousSibling[0]) {
+        var newParent = spaceReferenceInput.val();
+
+        // Ajax request to the service that returns the list of children for a given parent page.
+        $.ajax({
+          url: sectionCreationServiceURL,
+
+          // The data to send (will be converted to a query string).
+          data: {
+            reference: encodeURIComponent(newParent),
+            outputSyntax: 'plain',
+            xpage: 'plain'
+          },
+
+          // In case of success, repopulate the list of siblings (remove the current siblings and add the ones from the response).
+          success:function(result){
+            previousSibling.empty().append(result);
+            if(previousSibling.children().size() &gt; 1) {
+              previousSiblingsContainer.show();
+            }
+          }
+        }); //ajax
+      }
+    });
+
+    /*
+     * The location pickier is using a custom tree. This is the selection in the tree does not work with the custom tree,
+     * this is why we need to make some changes in the picker to make it work.
+     */
+    $('.location-picker').each(function() {
+      var picker = $(this),
+          trigger = picker.find('.location-action-pick'),
+          modal = picker.find('.modal'),
+          treeElement = modal.find('.xtree'),
+          selectButton = modal.find('.modal-footer .btn-primary');
+
+      // Copied from locationPicker.js
+      trigger.click(function(event) {
+        event.preventDefault();
+        modal.modal();
+      });
+
+      // Handling the display of the modal.
+      modal.on('shown.bs.modal', function(event) {
+        // Open to the specified node only once. Preserve the tree state otherwise.
+        var openToNodeId = trigger.attr('data-openTo');
+        if (openToNodeId &amp;&amp; openToNodeId !== modal.data('openTo')) {
+          modal.data('openTo', openToNodeId);
+        } else {
+          openToNodeId = false;
+        }
+
+        // Define the CUSTOM tree
+        var tree = $.jstree.reference(treeElement);
+        tree = treeElement.xtree({
+            core: {
+              multiple: treeElement.data('multiple') === 'true'
+            }
+          }).one('ready.jstree', function(event, data) {
+            openToNodeId &amp;&amp; data.instance.openTo(openToNodeId);
+          }).on('changed.jstree', function(event, data) {
+            selectButton.prop('disabled', data.selected.size() === 0);
+          }).on('dblclick', '.jstree-anchor', function() {
+            selectButton.click();
+          });
+      });
+
+      // Cancel the default click event handler and create a new one that matches the actions in the CUSTOM tree
+      selectButton.off("click").on("click", function(event) {
+        modal.modal('hide');
+        modal.triggerHandler('xwiki:locationTreePicker:select', {
+          'tree': $.jstree.reference(treeElement)
+        });
+      });
+    });
+  };
+
+  $(document).on('xwiki:dom:loaded', init);
+  XWiki.domIsLoaded &amp;&amp; init();
+ });
+});</code>
+    </property>
+    <property>
+      <name>Creation JS</name>
+    </property>
+    <property>
+      <parse>1</parse>
+    </property>
+    <property>
+      <use/>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.CreateSheet</name>
+    <number>0</number>
+    <className>XWiki.StyleSheetExtension</className>
+    <guid>6bddda9d-d7fe-48e3-a310-cea15a23476f</guid>
+    <class>
+      <name>XWiki.StyleSheetExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <contentType>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>contentType</name>
+        <number>6</number>
+        <prettyName>Content Type</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>CSS|LESS</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </contentType>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>#hierarchy,
+.document-header,
+.xcontent hr,
+#xdocFooter {
+  display: none;
+}</code>
+    </property>
+    <property>
+      <contentType/>
+    </property>
+    <property>
+      <name>Creation CSS</name>
+    </property>
+    <property>
+      <parse/>
+    </property>
+    <property>
+      <use/>
+    </property>
+  </object>
+</xwikidoc>

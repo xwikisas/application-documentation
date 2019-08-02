@@ -45,6 +45,22 @@
 #if ($xcontext.action == 'edit')
 {{html wiki="true"}}
 #set ($discard = $doc.use('Documentation.Code.SectionClass'))
+#set($parent = $request.parent)
+#set($previousSibling = $request.previoussibling)
+#if("$!previousSibling" != '')
+  &lt;input type="hidden" name="Documentation.Code.SectionClass_0_previousSection" value="$!escapetool.xml($previousSibling)" /&gt;
+#end
+#if("$!parent" != '')
+  #set ($webhome = $services.model.getEntityReference('DOCUMENT', 'default').name)
+  ##
+  ## In case the parent does not contain WebHome, we add it.
+  #if(!$parent.matches("(.*)\.${webhome}"))
+    #set($parent = $parent + ".${webhome}")
+  #end
+  &lt;input type="hidden" name="Documentation.Code.SectionClass_0_parentSection" value="$!escapetool.xml($parent)" /&gt;
+#end
+## TO DO
+## Set the NUMBER &amp; the NEXT sibling
 (% class="xform" %)
 (((
   ; &lt;label for="Documentation.Code.SectionClass_0_title"&gt;$escapetool.xml($doc.displayPrettyName('title', false, false))&lt;/label&gt;
@@ -53,7 +69,7 @@
   : $doc.display('content')
 )))
 {{/html}}
-#elseif ($xcontext.action == 'export')
+#elseif ($request.showShortcuts == 1)
 #displaySectionNavigationShortcuts()
 
 $doc.display('content')

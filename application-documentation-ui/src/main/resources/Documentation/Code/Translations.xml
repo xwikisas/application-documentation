@@ -39,11 +39,13 @@
   <minorEdit>false</minorEdit>
   <syntaxId>plain/1.0</syntaxId>
   <hidden>true</hidden>
-  <content>documentation.navigation.previousSection=Previous section :
+  <content># Home sheet
+home.sheet.title=Documentation
+# Section sheet
+documentation.navigation.previousSection=Previous section :
 documentation.navigation.nextSection=Next section :
-
+# Panels
 documentation.panel.navigation.title=Navigation
-
 # Creation sheet
 section.create.sheet.title=Create new section
 section.create.previoussibling.label=Insert page after ...
