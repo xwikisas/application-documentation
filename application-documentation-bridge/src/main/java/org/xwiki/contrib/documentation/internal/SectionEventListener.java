@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.xwiki.bridge.event.DocumentCreatedEvent;
 import org.xwiki.bridge.event.DocumentDeletedEvent;
@@ -33,6 +34,8 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.contrib.documentation.DocumentationBridge;
 import org.xwiki.contrib.documentation.DocumentationException;
 import org.xwiki.contrib.documentation.SectionNumberingManager;
+import org.xwiki.contrib.documentation.SectionOrderingManager;
+import org.xwiki.contrib.documentation.SectionParentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
@@ -43,6 +46,8 @@ import org.xwiki.observation.event.Event;
 
 import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.doc.XWikiDocument;
+
+import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
 
 /**
  * Will listen for deleted or refactored document to update the section metadata associated with the documents.
@@ -67,6 +72,12 @@ public class SectionEventListener implements EventListener
     private SectionNumberingManager sectionNumberingManager;
 
     @Inject
+    private SectionParentManager sectionParentManager;
+
+    @Inject
+    private SectionOrderingManager sectionOrderingManager;
+
+    @Inject
     private DocumentationBridge documentationBridge;
 
     @Inject
@@ -87,7 +98,7 @@ public class SectionEventListener implements EventListener
     @Override
     public void onEvent(Event event, Object source, Object data)
     {
-        if (event instanceof DocumentDeletedEvent) {
+        if (event instanceof DocumentDeletedEvent || event instanceof DocumentCreatedEvent) {
             XWikiDocument document = (XWikiDocument) source;
             XWikiContext xContext = (XWikiContext) data;
 
@@ -96,25 +107,76 @@ public class SectionEventListener implements EventListener
                             DefaultDocumentationBridge.SECTION_CLASS,
                             new WikiReference(xContext.getWikiId()));
 
-            if (document.getOriginalDocument().getXObjects(classReference).size() > 0) {
-                updateNextAndPreviousSections(document.getOriginalDocument(), classReference);
-                updateSpaceNumbering(document.getOriginalDocument());
+            if (document.getXObjects(classReference).size() > 0) {
+                if (event instanceof DocumentDeletedEvent) {
+                    updateNextAndPreviousSections(document.getOriginalDocument(), classReference);
+                    updateSpaceNumbering(document.getOriginalDocument());
+                } else if (event instanceof  DocumentCreatedEvent) {
+                    setupNewDocument(document, classReference);
+                }
             }
+        }
+    }
+
+    private void setupNewDocument(XWikiDocument document, DocumentReference classReference) {
+        try {
+            // Compute the parent
+            sectionParentManager.computeParentSection(document.getDocumentReference());
+            // Refresh the numbering of the space
+            sectionNumberingManager.recomputeNumberingsFromSection(document.getDocumentReference());
+            // Compute the previous and next sections
+            sectionOrderingManager.computePreviousAndNextSections(document.getDocumentReference());
+
+            // Update the previous and next sections attributes to match on the current document
+            String previousSectionFullName = document.getStringValue(classReference,
+                    DefaultDocumentationBridge.PREVIOUS_SECTION_PROPERTY);
+            String nextSectionFullName = document.getStringValue(classReference,
+                    DefaultDocumentationBridge.NEXT_SECTION_PROPERTY);
+
+            // Test if we're not at the start of the documentation
+            if (!StringUtils.isBlank(previousSectionFullName)) {
+                DocumentReference previousSection = documentReferenceResolver.resolve(previousSectionFullName);
+
+                documentationBridge.setNextSection(previousSection, document.getDocumentReference());
+            }
+
+            // Test if we're not at the end of the documentation
+            if (!StringUtils.isBlank(nextSectionFullName)) {
+                DocumentReference nextSection = documentReferenceResolver.resolve(nextSectionFullName);
+
+                documentationBridge.setPreviousSection(nextSection, document.getDocumentReference());
+            }
+
+        } catch (DocumentationException e) {
+            logger.error("Failed to set up section document [{}] : [{}]", document,
+                    getRootCauseMessage(e));
         }
     }
 
     private void updateNextAndPreviousSections(XWikiDocument document, DocumentReference classReference) {
         try {
             // Get the next document reference
-            DocumentReference previousSection = documentReferenceResolver.resolve(
-                    document.getStringValue(classReference, DefaultDocumentationBridge.PREVIOUS_SECTION_PROPERTY));
-            DocumentReference nextSection = documentReferenceResolver.resolve(
-                    document.getStringValue(classReference, DefaultDocumentationBridge.NEXT_SECTION_PROPERTY));
+            String previousSectionFullName = document.getStringValue(classReference,
+                    DefaultDocumentationBridge.PREVIOUS_SECTION_PROPERTY);
+            String nextSectionFullName = document.getStringValue(classReference,
+                    DefaultDocumentationBridge.NEXT_SECTION_PROPERTY);
 
-            documentationBridge.setPreviousSection(nextSection, previousSection);
-            documentationBridge.setNextSection(previousSection, nextSection);
-        } catch (DocumentationException e) {
-            logger.error("Failed to update previous and next sections for document {} : {}", document, e);
+            DocumentReference previousSection = (StringUtils.isBlank(previousSectionFullName))
+                    ? null : documentReferenceResolver.resolve(previousSectionFullName);
+            DocumentReference nextSection = (StringUtils.isBlank(nextSectionFullName))
+                    ? null : documentReferenceResolver.resolve(nextSectionFullName);
+
+            if (previousSection != null) {
+                documentationBridge.setNextSection(previousSection, nextSection);
+            }
+
+            if (nextSection != null) {
+                documentationBridge.setPreviousSection(nextSection, previousSection);
+            }
+
+        } catch (Exception e) {
+            logger.error("Failed to update previous and next sections for document [{}] : [{}]", document,
+                    getRootCauseMessage(e));
         }
     }
 
@@ -127,9 +189,9 @@ public class SectionEventListener implements EventListener
                 sectionNumberingManager.recomputeNumberingsFromParentSection(
                         new DocumentReference("WebHome", (SpaceReference) parentSpaceReference));
             }
-        } catch (DocumentationException e) {
-            logger.error("Failed to update the numbering of the other sections in the space (siblings of {}) : {}",
-                    document, e);
+        } catch (Exception e) {
+            logger.error("Failed to update the numbering of the other sections in the space (siblings of [{}]) : [{}]",
+                    document, getRootCauseMessage(e));
         }
     }
 }

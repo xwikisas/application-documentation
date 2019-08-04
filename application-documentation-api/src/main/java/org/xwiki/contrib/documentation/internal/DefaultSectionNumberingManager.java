@@ -55,11 +55,19 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
 
     private static final String SELECT_OBJ_NAME_NUMBERING_VALUE = "select obj.name, numbering.value ";
 
-    private static final String FROM_OBJ_PARENT_NUMBERING = "form BaseObject obj, "
+    private static final String FROM_OBJ_PARENT_NUMBERING = "from BaseObject obj, "
             + "StringProperty parent, LongProperty numbering ";
 
     private static final String WHERE_OBJ_CLASSNAME_SECTIONCLASS = "where obj.className = "
             + "'Documentation.Code.SectionClass' ";
+
+    private static final String OBJ_ID_PARENT_EQUALS = "and obj.id = parent.id.id ";
+
+    private static final String PARENT_NAME_EQUALS = "and parent.id.name = 'parentSection' ";
+
+    private static final String OBJ_ID_NUMBERING_EQUALS = "and obj.id = numbering.id.id ";
+
+    private static final String NUMBERING_NAME_EQUALS = "and numbering.id.name = 'numbering' ";
 
     private static final String PARENT_VALUE_EQUALS = "and parent.value = :" + PARENT_DOCUMENT + " ";
 
@@ -167,15 +175,19 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
 
         if (parentSpaceReference instanceof SpaceReference) {
             DocumentReference parentReference = new DocumentReference(WEB_HOME,
-                    (SpaceReference) parentSpaceReference.getParent().getParent());
+                    (SpaceReference) parentSpaceReference);
 
             try {
                 // Get every document in the space
                 Query query = queryManager.createQuery(SELECT_OBJ_NAME_NUMBERING_VALUE
                         + FROM_OBJ_PARENT_NUMBERING
                         + WHERE_OBJ_CLASSNAME_SECTIONCLASS
-                        + "and numbering >= :numbering "
-                        + "and obj.name != :currentDocument "
+                        + OBJ_ID_PARENT_EQUALS
+                        + PARENT_NAME_EQUALS
+                        + OBJ_ID_NUMBERING_EQUALS
+                        + NUMBERING_NAME_EQUALS
+                        + "and numbering.value >= :numbering "
+                        + "and obj.name <> :currentDocument "
                         + PARENT_VALUE_EQUALS
                         + ORDER_BY_NUMBERING_ASC, Query.HQL);
 
@@ -205,6 +217,10 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
             Query query = queryManager.createQuery(SELECT_OBJ_NAME_NUMBERING_VALUE
                     + FROM_OBJ_PARENT_NUMBERING
                     + WHERE_OBJ_CLASSNAME_SECTIONCLASS
+                    + OBJ_ID_PARENT_EQUALS
+                    + PARENT_NAME_EQUALS
+                    + OBJ_ID_NUMBERING_EQUALS
+                    + NUMBERING_NAME_EQUALS
                     + PARENT_VALUE_EQUALS
                     + ORDER_BY_NUMBERING_ASC, Query.HQL);
 
