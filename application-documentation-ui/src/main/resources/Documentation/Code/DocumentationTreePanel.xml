@@ -124,11 +124,11 @@
     <property>
       <content>{{velocity}}
   #panelheader($services.localization.render('documentation.panel.navigation.title'))
-  #if(!$request.viewer)
-    {{tree reference="Documentation.Code.DocumentationTreeSource" root="document:Documentation.WebHome" links="true" /}}
-  #end
+  ## Escape special characters in macro parameter values.
+  #set ($openToDoc = $doc.documentReference.toString().replaceAll('([~"])', '~$1'))
+  {{tree reference="Documentation.Code.DocumentationTreeSource" root="document:Documentation.WebHome" icons="false" openTo="document:$openToDoc" links="true" /}}
   #panelfooter()
-{{/velocity}} </content>
+{{/velocity}}</content>
     </property>
     <property>
       <description>Navigation panel of the documentation</description>
