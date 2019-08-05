@@ -17,15 +17,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.contrib.documentation.internal;
+package com.xwiki.documentation.internal;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
-import org.xwiki.contrib.documentation.DocumentationBridge;
-import org.xwiki.contrib.documentation.DocumentationException;
-import org.xwiki.contrib.documentation.SectionParentManager;
+import com.xwiki.documentation.DocumentationBridge;
+import com.xwiki.documentation.DocumentationException;
+import com.xwiki.documentation.SectionParentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.SpaceReference;

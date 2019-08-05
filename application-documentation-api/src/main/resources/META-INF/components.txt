@@ -1,3 +1,3 @@
-org.xwiki.contrib.documentation.internal.DefaultSectionNumberingManager
-org.xwiki.contrib.documentation.internal.DefaultSectionOrderingManager
-org.xwiki.contrib.documentation.internal.DefaultSectionParentManager
+com.xwiki.documentation.internal.DefaultSectionNumberingManager
+com.xwiki.documentation.internal.DefaultSectionOrderingManager
+com.xwiki.documentation.internal.DefaultSectionParentManager

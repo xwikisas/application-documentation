@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.contrib.documentation.internal;
+package com.xwiki.documentation.internal;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -30,8 +30,8 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Role;
-import org.xwiki.contrib.documentation.DocumentationBridge;
-import org.xwiki.contrib.documentation.DocumentationException;
+import com.xwiki.documentation.DocumentationBridge;
+import com.xwiki.documentation.DocumentationException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.LocalDocumentReference;

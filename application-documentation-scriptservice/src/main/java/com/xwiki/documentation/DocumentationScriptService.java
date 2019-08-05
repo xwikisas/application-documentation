@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.contrib.documentation;
+package com.xwiki.documentation;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,6 +26,7 @@ import javax.inject.Singleton;
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.script.service.ScriptService;
+import org.xwiki.stability.Unstable;
 
 /**
  * This is the script service for the Documentation application.
@@ -35,6 +36,7 @@ import org.xwiki.script.service.ScriptService;
  */
 @Component
 @Singleton
+@Unstable
 @Named("documentation")
 public class DocumentationScriptService implements ScriptService
 {

@@ -1,2 +1,2 @@
-org.xwiki.contrib.documentation.internal.DefaultDocumentationBridge
-org.xwiki.contrib.documentation.internal.SectionEventListener
+com.xwiki.documentation.internal.DefaultDocumentationBridge
+com.xwiki.documentation.internal.SectionEventListener

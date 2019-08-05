@@ -44,6 +44,7 @@
     <connection>scm:git:git://git.xwikisas.com/xwiki-sas-cpt/application-documentation.git</connection>
     <developerConnection>scm:git:git@git.xwikisas.com:xwiki-sas-cpt/application-documentation.git</developerConnection>
     <url>https://git.xwikisas.com/xwiki-sas-cpt/application-documentation.git</url>
+    <tag>HEAD</tag>
   </scm>
   <developers>
     <developer>

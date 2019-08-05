@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.contrib.documentation.internal;
+package com.xwiki.documentation.internal;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +31,11 @@ import org.slf4j.Logger;
 import org.xwiki.bridge.event.DocumentCreatedEvent;
 import org.xwiki.bridge.event.DocumentDeletedEvent;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.contrib.documentation.DocumentationBridge;
-import org.xwiki.contrib.documentation.DocumentationException;
-import org.xwiki.contrib.documentation.SectionNumberingManager;
-import org.xwiki.contrib.documentation.SectionOrderingManager;
-import org.xwiki.contrib.documentation.SectionParentManager;
+import com.xwiki.documentation.DocumentationBridge;
+import com.xwiki.documentation.DocumentationException;
+import com.xwiki.documentation.SectionNumberingManager;
+import com.xwiki.documentation.SectionOrderingManager;
+import com.xwiki.documentation.SectionParentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;

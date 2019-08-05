@@ -17,7 +17,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.xwiki.contrib.documentation.internal;
+package com.xwiki.documentation.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,10 +31,10 @@ import javax.inject.Singleton;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xwiki.component.annotation.Component;
-import org.xwiki.contrib.documentation.DocumentationBridge;
-import org.xwiki.contrib.documentation.DocumentationException;
-import org.xwiki.contrib.documentation.SectionNumberingManager;
-import org.xwiki.contrib.documentation.SectionOrderingManager;
+import com.xwiki.documentation.DocumentationBridge;
+import com.xwiki.documentation.DocumentationException;
+import com.xwiki.documentation.SectionNumberingManager;
+import com.xwiki.documentation.SectionOrderingManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
