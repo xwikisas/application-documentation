@@ -30,7 +30,7 @@
   <groupId>com.xwiki.documentation</groupId>
   <artifactId>application-documentation</artifactId>
   <name>Documentation Application</name>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0-milestone-1</version>
   <packaging>pom</packaging>
   <description>An application that adds the possibility to have numbering for each page of the documentation and to know what is the next and the previous page when consulting documentation pages.</description>
   <properties>
@@ -48,7 +48,7 @@
     <connection>scm:git:git://git.xwikisas.com/xwiki-sas-cpt/application-documentation.git</connection>
     <developerConnection>scm:git:git@git.xwikisas.com:xwiki-sas-cpt/application-documentation.git</developerConnection>
     <url>https://git.xwikisas.com/xwiki-sas-cpt/application-documentation.git</url>
-    <tag>HEAD</tag>
+    <tag>application-documentation-1.0-milestone-1</tag>
   </scm>
   <developers>
     <developer>
