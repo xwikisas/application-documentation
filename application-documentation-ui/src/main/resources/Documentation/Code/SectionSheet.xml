@@ -46,9 +46,9 @@
 {{html wiki="true"}}
 #set ($discard = $doc.use('Documentation.Code.SectionClass'))
 #set($parent = $request.parent)
-#set($previousSibling = $request.previoussibling)
-#if("$!previousSibling" != '')
-  &lt;input type="hidden" name="Documentation.Code.SectionClass_0_previousSection" value="$!escapetool.xml($previousSibling)" /&gt;
+#set($numbering = $request.numbering)
+#if("$!numbering" != '')
+  &lt;input type="hidden" name="Documentation.Code.SectionClass_0_numbering" value="$!escapetool.xml($numbering)" /&gt;
 #end
 #if("$!parent" != '')
   #set ($webhome = $services.model.getEntityReference('DOCUMENT', 'default').name)
@@ -59,8 +59,6 @@
   #end
   &lt;input type="hidden" name="Documentation.Code.SectionClass_0_parentSection" value="$!escapetool.xml($parent)" /&gt;
 #end
-## TO DO
-## Set the NUMBER &amp; the NEXT sibling
 (% class="xform" %)
 (((
   ; &lt;label for="Documentation.Code.SectionClass_0_title"&gt;$escapetool.xml($doc.displayPrettyName('title', false, false))&lt;/label&gt;

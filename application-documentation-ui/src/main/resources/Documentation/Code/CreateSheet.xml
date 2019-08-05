@@ -42,7 +42,7 @@
   <content>{{include reference="Documentation.Code.CreateMacros" /}}
 
 {{velocity}}
-== $services.localization.render('section.create.sheet.title') ==
+= $services.localization.render('section.create.sheet.title') =
 ##
 ## Calling the dedicated skin extension in order to handle the special behavior of the form elements (parent &amp; siblings selection)
 #set ($discard = $xwiki.jsx.use('Documentation.Code.CreateSheet'))
@@ -57,7 +57,7 @@
 #set ($template = 'Documentation.Code.SectionTemplate')
 #set ($title = "$!request.title")
 #set ($name = "$!request.name")
-#set ($previoussibling = "$!request.previoussibling")
+#set ($numbering = "$!request.numbering")
 ##
 ## In case the form was submitted with the expected non-null values, compute the URL and redirect to it
 #if($request.create == '1' &amp;&amp; "$!name" != '' &amp;&amp; "$!parentspace" != '')
@@ -77,7 +77,7 @@
   #set($newDocumentReference = $services.model.createDocumentReference($webhome, $services.model.resolveSpace($newparentspace)))
   ##
   ## Redirect to the new location, in edit mode, with some parameters used for prefilling some fields
-  $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "template=${request.template}&amp;title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}&amp;previoussibling=${escapetool.url($!previoussibling)}"))
+  $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "template=${request.template}&amp;title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}&amp;numbering=${escapetool.url($!numbering)}"))
 #end
 ##
 #set($exception = $createException)
@@ -163,12 +163,13 @@
               &lt;span class="xHint"&gt;$services.localization.render('section.create.previoussibling.hint')&lt;/span&gt;
             &lt;/dt&gt;
             &lt;dd&gt;
-              &lt;select name="previoussibling" id="previous-sibling"&gt;
-                &lt;option value=""&gt;&lt;/option&gt;
+              &lt;select name="numbering" id="previous-sibling"&gt;
+                &lt;option data-previousSibling="" value="1"&gt;&lt;/option&gt;
                 #foreach($sectionChild in $sectionChildren)
                   #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
+                  #set($sectionChildDocument = $xwiki.getDocument($sectionChildRef))
                   #if($services.security.authorization.hasAccess('view', $sectionChildRef))
-                    &lt;option value="$sectionChild" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$xwiki.getDocument($sectionChildRef).displayTitle&lt;/option&gt;
+                    &lt;option data-previousSibling="$sectionChild" value="$services.documentation.numberingManager.getNumberingFromSibling($sectionChildRef)" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$sectionChildDocument.displayTitle&lt;/option&gt;
                   #end
                 #end
               &lt;/select&gt;
@@ -299,7 +300,7 @@
 
           // The data to send (will be converted to a query string).
           data: {
-            reference: encodeURIComponent(newParent),
+            reference: newParent,
             outputSyntax: 'plain',
             xpage: 'plain'
           },

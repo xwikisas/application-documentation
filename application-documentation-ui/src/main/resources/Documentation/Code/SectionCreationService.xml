@@ -40,14 +40,18 @@
   <syntaxId>xwiki/2.1</syntaxId>
   <hidden>true</hidden>
   <content>{{velocity}}
-  &lt;option value=""&gt;&lt;/option&gt;
+  ## The "value" filed of these options correspond to the numbering that should have the selected document if the given sibling is chosen
+  &lt;option data-previousSibling="" value="1"&gt;&lt;/option&gt;
   #set($parentSpaceReference = $request.reference)
   #if("$!parentSpaceReference" != '')
-    #set($sectionChildren = $xwiki.searchDocuments(', XWikiSpace s, BaseObject o, LongProperty p where doc.translation = 0 and doc.space = s.reference and s.parent = ?  and o.name = doc.fullName and o.className = ? and p.id.id = o.id and p.name = ? and doc.fullName &lt;&gt; ? order by p.value asc', 0, 0, [$services.model.serialize($services.model.resolveSpace($parentSpaceReference), 'local'), 'Documentation.Code.SectionClass', 'numbering', 'Documentation.Code.SectionTemplate']))
+    ## Compute the reference of the parent document
+    #set($parentReference = "$!{parentSpaceReference}.WebHome")
+    #set($sectionChildren = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = 'Documentation.Code.SectionClass' and obj.name &lt;&gt; 'Documentation.Code.SectionTemplate' and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = 'parentSection' and numbering.id.name = 'numbering' and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $parentReference).execute())
     #foreach($sectionChild in $sectionChildren)
       #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
+      #set($sectionChildDocument = $xwiki.getDocument($sectionChildRef))
       #if($services.security.authorization.hasAccess('view', $sectionChildRef))
-        &lt;option value="$sectionChild" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$xwiki.getDocument($sectionChildRef).displayTitle&lt;/option&gt;
+        &lt;option data-previousSibling="$sectionChild" value="$services.documentation.numberingManager.getNumberingFromSibling($sectionChildRef)" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$sectionChildDocument.displayTitle&lt;/option&gt;
       #end
     #end
   #end
