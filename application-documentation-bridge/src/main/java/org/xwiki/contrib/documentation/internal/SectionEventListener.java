@@ -45,6 +45,7 @@ import org.xwiki.observation.EventListener;
 import org.xwiki.observation.event.Event;
 
 import com.xpn.xwiki.XWikiContext;
+import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
 
 import static org.apache.commons.lang3.exception.ExceptionUtils.getRootCauseMessage;
@@ -81,6 +82,7 @@ public class SectionEventListener implements EventListener
     private DocumentationBridge documentationBridge;
 
     @Inject
+    @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Override
@@ -112,13 +114,13 @@ public class SectionEventListener implements EventListener
                     updateNextAndPreviousSections(document.getOriginalDocument(), classReference);
                     updateSpaceNumbering(document.getOriginalDocument());
                 } else if (event instanceof  DocumentCreatedEvent) {
-                    setupNewDocument(document, classReference);
+                    setupNewDocument(document, classReference, xContext);
                 }
             }
         }
     }
 
-    private void setupNewDocument(XWikiDocument document, DocumentReference classReference) {
+    private void setupNewDocument(XWikiDocument document, DocumentReference classReference, XWikiContext xWikiContext) {
         try {
             // Compute the parent
             sectionParentManager.computeParentSection(document.getDocumentReference());
@@ -127,27 +129,30 @@ public class SectionEventListener implements EventListener
             // Compute the previous and next sections
             sectionOrderingManager.computePreviousAndNextSections(document.getDocumentReference());
 
+            // Reload the document
+            XWikiDocument updatedDocument = xWikiContext.getWiki()
+                    .getDocument(document.getDocumentReference(), xWikiContext);
             // Update the previous and next sections attributes to match on the current document
-            String previousSectionFullName = document.getStringValue(classReference,
+            String previousSectionFullName = updatedDocument.getStringValue(classReference,
                     DefaultDocumentationBridge.PREVIOUS_SECTION_PROPERTY);
-            String nextSectionFullName = document.getStringValue(classReference,
+            String nextSectionFullName = updatedDocument.getStringValue(classReference,
                     DefaultDocumentationBridge.NEXT_SECTION_PROPERTY);
 
             // Test if we're not at the start of the documentation
             if (!StringUtils.isBlank(previousSectionFullName)) {
                 DocumentReference previousSection = documentReferenceResolver.resolve(previousSectionFullName);
 
-                documentationBridge.setNextSection(previousSection, document.getDocumentReference());
+                documentationBridge.setNextSection(previousSection, updatedDocument.getDocumentReference());
             }
 
             // Test if we're not at the end of the documentation
             if (!StringUtils.isBlank(nextSectionFullName)) {
                 DocumentReference nextSection = documentReferenceResolver.resolve(nextSectionFullName);
 
-                documentationBridge.setPreviousSection(nextSection, document.getDocumentReference());
+                documentationBridge.setPreviousSection(nextSection, updatedDocument.getDocumentReference());
             }
 
-        } catch (DocumentationException e) {
+        } catch (DocumentationException | XWikiException e) {
             logger.error("Failed to set up section document [{}] : [{}]", document,
                     getRootCauseMessage(e));
         }

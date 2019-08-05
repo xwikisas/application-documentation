@@ -37,6 +37,7 @@ import org.xwiki.contrib.documentation.SectionNumberingManager;
 import org.xwiki.contrib.documentation.SectionOrderingManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
+import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.SpaceReference;
 import org.xwiki.query.Query;
@@ -74,6 +75,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
     private EntityReferenceSerializer<String> entityReferenceSerializer;
 
     @Inject
+    @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Inject
@@ -188,49 +190,52 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                             ? documentationBridge.getNumbering(documentReference) - 1
                             : documentationBridge.getNumbering(documentReference) + 1;
 
-            /* For computing the name of the space of the current doc that we'll use here,
-               we call EntityReference#parent twice as we are working with nested pages
-               One #parent() will remove .WebHome
-               The other one will define the space
-             */
-            String currentSpace = entityReferenceSerializer.serialize(documentReference.getParent().getParent());
+            EntityReference parentSpace = documentReference.getParent().getParent();
+            if (parentSpace instanceof SpaceReference) {
+                // Compute the reference of the parent
+                DocumentReference parentReference = new DocumentReference(WEB_HOME, (SpaceReference) parentSpace);
 
-            try {
-                String hqlQuery = "select sectionObject.name "
-                        + "from BaseObject sectionObject, LongProperty sectionNumbering "
-                        + "where sectionObject.className =  'Documentation.Code.SectionClass' "
-                        + "and sectionNumbering.id.id = sectionObject.id "
-                        + "and sectionNumbering.id.name = 'numbering' "
-                        + "and sectionNumbering.value = :nextNumbering "
-                        + "and sectionObject.name like :currentSpace "
-                        // Exclude everything from the code space
-                        + "and sectionObject.name not like 'Documentation.Code.%'";
+                try {
+                    String hqlQuery = "select obj.name "
+                            + "from BaseObject obj, LongProperty numbering, StringProperty parent "
+                            + "where obj.className =  'Documentation.Code.SectionClass' "
+                            + "and numbering.id.id = obj.id "
+                            + "and numbering.id.name = 'numbering' "
+                            + "and parent.id.id = obj.id "
+                            + "and parent.id.name = 'parentSection' "
+                            + "and numbering.value = :expectedNumbering "
+                            + "and parent.value = :parentReference "
+                            // Exclude everything from the code space
+                            + "and obj.name not like 'Documentation.Code.%'";
 
-                List<String> results = queryManager.createQuery(hqlQuery, Query.HQL)
-                        .bindValue("nextNumbering", sectionNumbering)
-                        .bindValue("currentSpace", String.format(SPACE_FILTER_FORMAT, currentSpace))
-                        .execute();
+                    List<String> results = queryManager.createQuery(hqlQuery, Query.HQL)
+                            .bindValue("expectedNumbering", sectionNumbering)
+                            .bindValue("parentReference", entityReferenceSerializer.serialize(parentReference))
+                            .execute();
 
-                if (results.size() >= 1) {
-                    for (String result : results) {
-                        DocumentReference resultReference = documentReferenceResolver.resolve(result);
-                        // Check that the result that we have is actually in the same space as ours
-                        if (resultReference.getParent().getParent()
-                                .equals(documentReference.getParent().getParent())) {
+                    if (results.size() >= 1) {
+                        for (String result : results) {
+                            DocumentReference resultReference = documentReferenceResolver.resolve(result);
+                            // Return only the first result (if we have more than one, it means that something went
+                            // wrong when creating pages
                             return resultReference;
                         }
+
+                        // In case we didn't found anything, then it means that we have no other section available.
+                        return null;
+                    } else {
+                        return null;
                     }
 
-                    // In case we didn't found anything, then it means that we have no other section available.
-                    return null;
-                } else {
-                    return null;
+                } catch (QueryException e) {
+                    throw new DocumentationException(
+                            String.format("Failed to get the [%s] section in space [%s]", position, parentSpace), e);
                 }
-
-            } catch (QueryException e) {
-                throw new DocumentationException(
-                        String.format("Failed to get the [%s] section in space [%s]", position, currentSpace), e);
+            } else {
+                throw new DocumentationException("Creating a documentation at the root of the wiki is currently "
+                        + "not supported, please create your documentation in a space.");
             }
+
         } else {
             throw new DocumentationException(
                     String.format("The document [%s] has no numbering.", documentReference));

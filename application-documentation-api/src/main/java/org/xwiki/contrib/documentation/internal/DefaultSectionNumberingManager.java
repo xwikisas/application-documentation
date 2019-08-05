@@ -84,6 +84,7 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
     private EntityReferenceSerializer<String> entityReferenceSerializer;
 
     @Inject
+    @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Override

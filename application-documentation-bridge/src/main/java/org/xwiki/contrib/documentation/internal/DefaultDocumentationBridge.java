@@ -100,9 +100,14 @@ public class DefaultDocumentationBridge implements DocumentationBridge
 
             BaseObject obj = doc.getXObject(
                     new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
-            obj.setLongValue(NUMBERING_PROPERTY, numbering);
+            if (obj != null) {
+                obj.setLongValue(NUMBERING_PROPERTY, numbering);
 
-            xwiki.saveDocument(doc, "Section numbering update", true, xContext);
+                xwiki.saveDocument(doc, "Section numbering update", true, xContext);
+            } else {
+                throw new DocumentationException(String.format("Document [%s] is not a documentation section.",
+                        documentReference));
+            }
         } catch (XWikiException e) {
             throw new DocumentationException(
                     String.format("Failed to set numbering for document [%s].", documentReference));
