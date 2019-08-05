@@ -121,9 +121,9 @@
     &lt;/dt&gt;
     &lt;dd&gt;
       #if ($isDocumentTreeAvailable)
-        ## SCOR : building a custom picker modal, containing a custom tree
+        ## Start of customization as part of the Documentation application : building a custom picker modal, containing a custom tree
         #documentPickerModalCustom($options)
-        ## End SCOR
+        ## End of customization as part of the Documentation application
         #locationPickerActions
       #end
       ## The breadcrumb is updated whenever the user changes the parent page. This causes the breadcrumb element to be
