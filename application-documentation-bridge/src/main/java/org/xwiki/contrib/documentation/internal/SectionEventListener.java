@@ -104,17 +104,24 @@ public class SectionEventListener implements EventListener
             XWikiDocument document = (XWikiDocument) source;
             XWikiContext xContext = (XWikiContext) data;
 
+            XWikiDocument documentToUse;
+            if (event instanceof DocumentDeletedEvent) {
+                documentToUse = document.getOriginalDocument();
+            } else {
+                documentToUse = document;
+            }
+
             DocumentReference classReference =
                     new DocumentReference(
                             DefaultDocumentationBridge.SECTION_CLASS,
                             new WikiReference(xContext.getWikiId()));
 
-            if (document.getXObjects(classReference).size() > 0) {
+            if (documentToUse.getXObjects(classReference).size() > 0) {
                 if (event instanceof DocumentDeletedEvent) {
-                    updateNextAndPreviousSections(document.getOriginalDocument(), classReference);
-                    updateSpaceNumbering(document.getOriginalDocument());
+                    updateNextAndPreviousSections(documentToUse, classReference);
+                    updateSpaceNumbering(documentToUse);
                 } else if (event instanceof  DocumentCreatedEvent) {
-                    setupNewDocument(document, classReference, xContext);
+                    setupNewDocument(documentToUse, classReference, xContext);
                 }
             }
         }
