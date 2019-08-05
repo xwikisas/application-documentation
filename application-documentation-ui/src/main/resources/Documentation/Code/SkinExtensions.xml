@@ -130,7 +130,9 @@
       spaceReference : The current space reference,
       spaces : The list of spaces for the current document,
       createURL : The URL of the custom creation form. It's actually the URL of the current doc in 'view' mode, 
-                  with the custom sheet as parameter.
+                  with the custom sheet as parameter,
+      renameButton : The rename button container,
+      renameURL : The URL of the custom rename form.
     */
     var createButton = $('#tmCreate'),
         documentReference = XWiki.Document.currentDocumentReference,
@@ -138,7 +140,9 @@
         spaces = spaceReference.getReversedReferenceChain().map(function(spaceRef) {
           return spaceRef.getName();
         }),
-        createURL = new XWiki.Document(documentReference).getURL('view', 'sheet=Documentation.Code.CreateSheet');
+        createURL = new XWiki.Document(documentReference).getURL('view', 'sheet=Documentation.Code.CreateSheet'),
+        renameButton = $('#tmActionRename'),
+        renameURL = new XWiki.Document(documentReference).getURL('view', 'sheet=Documentation.Code.RenameSheet');
 
     // ----------------------------------------
     // Create
@@ -148,7 +152,8 @@
     // Given the limitations of the JS API - can't build a local space reference -, 
     //   the first element in the list of spaces will be the wiki id, this is why we skip it.
     if(spaces.size() &gt; 1 &amp;&amp; spaces[1] == 'Documentation') {
-      $('#tmCreate').find('a').attr('href', createURL);
+      createButton.find('a').attr('href', createURL);
+      renameButton.attr('href', renameURL);
     }
   }
 
