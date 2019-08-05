@@ -36,6 +36,13 @@
     <!-- Ensure that the pages cannot be easily modified -->
     <xwiki.xar.protection>deny</xwiki.xar.protection>
   </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.xwiki.documentation</groupId>
+      <artifactId>application-documentation-scriptservice</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
   <build>
     <extensions>
       <extension>
