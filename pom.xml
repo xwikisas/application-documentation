@@ -39,6 +39,10 @@
     <xwiki.extension.name>Documentation Application</xwiki.extension.name>
     <!-- Sets value for the categories column on e.x.o -->
     <xwiki.extension.category>application</xwiki.extension.category>
+    <!-- Completely skip the Nexus plugin -->
+    <xwiki.nexus.skipStaging>true</xwiki.nexus.skipStaging>
+    <!-- Disable the automatic release after the clone -->
+    <xwiki.nexus.autoReleaseAfterClose>false</xwiki.nexus.autoReleaseAfterClose>
   </properties>
   <scm>
     <connection>scm:git:git://git.xwikisas.com/xwiki-sas-cpt/application-documentation.git</connection>
