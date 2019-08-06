@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>CreateSheet</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -73,7 +73,7 @@
   #end
   ##
   ## Starting to compute the new document reference
-  #set ($newparentspace = $newparentspace + '.' + $name)
+  #set ($newparentspace = $newparentspace + '.' + $name.replaceAll('\.', '\\.'))
   #set($newDocumentReference = $services.model.createDocumentReference($webhome, $services.model.resolveSpace($newparentspace)))
   ##
   ## Redirect to the new location, in edit mode, with some parameters used for prefilling some fields
