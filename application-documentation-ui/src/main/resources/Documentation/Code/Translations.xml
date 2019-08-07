@@ -51,7 +51,9 @@ section.create.sheet.title=Create new section
 section.create.previoussibling.label=Insert page after ...
 section.create.previoussibling.hint=The sibling page in the documentation after which the current page will be added.
 # Rename sheet
-section.rename.sheet.title=Move/Rename section [[{0}&gt;&gt;{1}]]</content>
+section.rename.sheet.title=Move/Rename section [[{0}&gt;&gt;{1}]]
+section.rename.sheet.error=Something went wrong. The document could not be moved to the new location.
+section.rename.sheet.metadataupdate=Section metadata update</content>
   <object>
     <name>Documentation.Code.Translations</name>
     <number>0</number>

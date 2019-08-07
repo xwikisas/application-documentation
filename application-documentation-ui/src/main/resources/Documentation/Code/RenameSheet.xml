@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>RenameSheet</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -81,7 +81,28 @@
           $newDocReference)
         #set ($newDocReferenceAsString = $services.model.serialize($newDocReference))
         ## Allow users to overwrite existing documents if they are redirect placeholders.
-        #if ($xwiki.exists($newDocReference) &amp;&amp; !$xwiki.getDocument($newDocReference).getObject('XWiki.RedirectClass'))
+        ##
+        #set($parentReferenceSerialized = $services.model.serialize($doc.parentReference, 'local'))
+        #set($changeNumberingAndKeepParent = "$!numbering" != '' &amp;&amp; $newParentSpace &amp;&amp; $newParentSpace == $parentReferenceSerialized)
+        #if($changeNumberingAndKeepParent)
+          ## In case the parent is the same and only the numbering changes, set the new numbering, then call the documentation service to :
+          ## - Recompute the numberings
+          ## - Set the previous and next sections
+          #set($sectionObj = $doc.getObject('Documentation.Code.SectionClass'))
+          #if($sectionObj &amp;&amp; $xwiki.checkAccess($doc.fullName, 'edit'))
+            ## Update the numbering for the current section
+            #set($newSectionNumber = $numbering)
+            $sectionObj.set('numbering', $numbering)
+            $doc.save( $services.localization.render('section.rename.sheet.numberupdate'), true)
+            ## Recompute the numberings
+            $services.documentation.numberingManager.recomputeNumberingsFromSection($doc.documentReference)
+            ## Compute the previous and next sections
+            $services.documentation.orderingManager.computePreviousAndNextSections($doc.documentReference)
+            $response.sendRedirect($doc.getURL())
+          #else
+            {{error}}$services.localization.render('section.rename.sheet.error'){{/error}}
+          #end
+        #elseif ($xwiki.exists($newDocReference) &amp;&amp; !$xwiki.getDocument($newDocReference).getObject('XWiki.RedirectClass'))
           $response.setStatus(409)
 
           {{html}}
@@ -99,11 +120,15 @@
           {{/html}}
 
           {{include reference="Documentation.Code.RenameForm" /}}
-        #elseif("$!numbering" != '' &amp;&amp; $services.model.serialize($doc.parentReference.lastSpaceReference, 'local') == "$!newParentSpace")
-          ## In case the parent is the same and only the numbering changes, set the new numbering, then call the documentation service to :
-          ## - Add -1 to the numbering of all sections that are between [OLD NEXT sibling and current section)
-          ## - Set the previous and next sections for all the sections that are between [OLD NEXT sibling and current section]
         #else
+          ## Before renaming, set the new section number
+          #set($sectionObj = $doc.getObject('Documentation.Code.SectionClass'))
+          #if($sectionObj)
+            ## Update the numbering for the renamed section
+            #set($newSectionNumber = $numbering)
+            $sectionObj.set('numbering', $numbering)
+            $doc.save( $services.localization.render('section.rename.sheet.metadataupdate'), true)
+          #end
           #set ($renameRequest = $services.refactoring.createRenameRequest($doc.documentReference, $newDocReference))
           ## We can't rename the children if the new page is terminal.
           #set ($deep = $request.deep == 'true' &amp;&amp; !$terminal)
@@ -117,12 +142,6 @@
           #if ($request.async == 'true')
             ## We may be asked a question (we assume that async also imply we want it interactive)
             #set ($discard = $renameRequest.setInteractive(true))
-          #end
-          #if("$!newParentSpace" != '')
-            ## In case the parent is changed, set the new numbering, then call the documentation service to :
-            ## - Add +1 to the numbering of all NEW NEXT sibling sections of the current section (on the NEW location)
-            ## - Add -1 to the numbering of all OLD NEXT sibling sections of the current section (on the OLD location)
-            ## - Set the previous and next sections for the current section and all its NEW &amp; OLD NEXT sibling sections
           #end
           #set ($renameJob = $services.refactoring.rename($renameRequest))
           #if ($request.async != 'true')

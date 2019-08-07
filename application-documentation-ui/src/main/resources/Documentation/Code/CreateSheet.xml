@@ -65,16 +65,10 @@
   ## WebHome name
   #set ($webhome = $services.model.getEntityReference('DOCUMENT', 'default').name)
   ##
-  ## In case the parent space contains WebHome, we exclude it.
-  ## Then, we concatenate the parent with the new name, in order to build the new non-terminal document reference.
-  #set ($newparentspace = $parentspace)
-  #if($newparentspace.matches("(.*)\.${webhome}"))
-    #set ($newparentspace = $services.model.serialize($services.model.resolveDocument($newparentspace).lastSpaceReference, 'local'))
-  #end
-  ##
-  ## Starting to compute the new document reference
-  #set ($newparentspace = $newparentspace + '.' + $name.replaceAll('\.', '\\.'))
-  #set($newDocumentReference = $services.model.createDocumentReference($webhome, $services.model.resolveSpace($newparentspace)))
+  ## Build the new reference
+  #set ($newParentSpace = $services.model.resolveSpace($parentspace))
+  #set ($newSpaceReference = $services.model.createSpaceReference($name, $newParentSpace))
+  #set ($newDocumentReference = $services.model.createDocumentReference($webhome, $newSpaceReference))
   ##
   ## Redirect to the new location, in edit mode, with some parameters used for prefilling some fields
   $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "template=${request.template}&amp;title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}&amp;numbering=${escapetool.url($!numbering)}"))
@@ -292,18 +286,23 @@
     // When the target space reference is changing, update the list of siblings.
     spaceReferenceInput.on('input change', function(event) {
       if(previousSibling[0]) {
-        var newParent = spaceReferenceInput.val();
+        var newData = {
+            reference: spaceReferenceInput.val(),
+            outputSyntax: 'plain',
+            xpage: 'plain'
+        }
+        // In case of rename, add the source in order to exclude the current doc
+        // and the existing previous sibling from the list of potential new previous siblings
+        if(window.location.href.indexOf('RenameSheet') &gt; 0) {
+           newData.source = XWiki.Model.serialize(XWiki.Document.currentDocumentReference);
+        }
 
         // Ajax request to the service that returns the list of children for a given parent page.
         $.ajax({
           url: sectionCreationServiceURL,
 
           // The data to send (will be converted to a query string).
-          data: {
-            reference: newParent,
-            outputSyntax: 'plain',
-            xpage: 'plain'
-          },
+          data: newData,
 
           // In case of success, repopulate the list of siblings (remove the current siblings and add the ones from the response).
           success:function(result){

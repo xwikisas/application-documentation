@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>SectionCreationService</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -42,15 +42,32 @@
   <content>{{velocity}}
   ## The "value" filed of these options correspond to the numbering that should have the selected document if the given sibling is chosen
   &lt;option data-previousSibling="" value="1"&gt;&lt;/option&gt;
+  #set($sectionClass = 'Documentation.Code.SectionClass')
+  #set($sectionTemplate = 'Documentation.Code.SectionTemplate')
+  #set($parentPropName = 'parentSection')
+  #set($numberingPropName = 'numbering')
   #set($parentSpaceReference = $request.reference)
+  #set($sourceReference = $request.source)
+  #set($excludes = [])
   #if("$!parentSpaceReference" != '')
     ## Compute the reference of the parent document
     #set($parentReference = "$!{parentSpaceReference}.WebHome")
-    #set($sectionChildren = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = 'Documentation.Code.SectionClass' and obj.name &lt;&gt; 'Documentation.Code.SectionTemplate' and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = 'parentSection' and numbering.id.name = 'numbering' and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $parentReference).execute())
+    #set($sourceDoc = $xwiki.getDocument($services.model.resolveDocument($sourceReference)))
+    #if("$!sourceReference" != '' &amp;&amp; !$sourceDoc.isNew())
+      ## Exclude the source
+      #set($sourceDocReferenceSerialized = $services.model.serialize($services.model.resolveDocument($sourceReference), 'local'))
+      #set($discard = $excludes.add($sourceDocReferenceSerialized))
+      ## Exclude the already existing previous sibling
+      #set($previousSiblingNumbering = $services.documentation.numberingManager.getNumberingFromSibling($services.model.resolveDocument($sourceReference)) - 2)
+      #set($sourceParentReference = $sourceDoc.getObject($sectionClass).getProperty($parentPropName).value)
+      #set($sourcePreviousSibling = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference and numbering.value = :previousSiblingNumbering order by numbering.value asc").bindValue('parentReference', $sourceParentReference).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).bindValue('previousSiblingNumbering', $previousSiblingNumbering).setLimit(1).execute())
+      #set($discard = $excludes.addAll($sourcePreviousSibling))
+    #end
+    #set($sectionChildren = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $parentReference).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).execute())
     #foreach($sectionChild in $sectionChildren)
       #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
       #set($sectionChildDocument = $xwiki.getDocument($sectionChildRef))
-      #if($services.security.authorization.hasAccess('view', $sectionChildRef))
+      #if($services.security.authorization.hasAccess('view', $sectionChildRef) &amp;&amp; !$listtool.contains($excludes, $sectionChild))
         &lt;option data-previousSibling="$sectionChild" value="$services.documentation.numberingManager.getNumberingFromSibling($sectionChildRef)" #if($previoussibling == $sectionChild) selected="selected"#end&gt;$sectionChildDocument.displayTitle&lt;/option&gt;
       #end
     #end

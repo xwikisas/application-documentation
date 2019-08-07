@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>SkinExtensions</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -145,7 +145,7 @@
         renameURL = new XWiki.Document(documentReference).getURL('view', 'sheet=Documentation.Code.RenameSheet');
 
     // ----------------------------------------
-    // Create
+    // Create &amp; Rename
     // ----------------------------------------
 
     // In case we're in Documentation space, modify the Create button to link to the custom creation form
