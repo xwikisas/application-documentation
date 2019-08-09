@@ -151,7 +151,7 @@
     // In case we're in Documentation space, modify the Create button to link to the custom creation form
     // Given the limitations of the JS API - can't build a local space reference -, 
     //   the first element in the list of spaces will be the wiki id, this is why we skip it.
-    if(spaces.size() &gt; 1 &amp;&amp; spaces[1] == 'Documentation') {
+    if(spaces.size() &gt; 1 &amp;&amp; spaces[1] == 'Documentation' &amp;&amp; !(spaces.size() &gt; 2 &amp;&amp; spaces[2] == 'Code')) {
       createButton.find('a').attr('href', createURL);
       renameButton.attr('href', renameURL);
     }

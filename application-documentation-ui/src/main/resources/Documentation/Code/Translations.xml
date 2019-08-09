@@ -41,6 +41,10 @@
   <hidden>true</hidden>
   <content># Home sheet
 home.sheet.title=Documentation
+home.sheet.toc=Table of contents
+home.sheet.filters=Filters
+home.sheet.table.section=Section
+home.sheet.table.parentsection=Parent section
 # Section sheet
 documentation.navigation.previousSection=Previous section :
 documentation.navigation.nextSection=Next section :
