@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>CreateSheet</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -498,7 +498,7 @@
       <parse/>
     </property>
     <property>
-      <use/>
+      <use>currentPage</use>
     </property>
   </object>
 </xwikidoc>

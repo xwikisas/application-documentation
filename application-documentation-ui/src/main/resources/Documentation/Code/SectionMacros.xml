@@ -24,7 +24,7 @@
   <web>Documentation.Code</web>
   <name>SectionMacros</name>
   <language/>
-  <defaultLanguage/>
+  <defaultLanguage>en</defaultLanguage>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <creationDate>1451602800000</creationDate>
@@ -41,12 +41,14 @@
   <hidden>true</hidden>
   <content>{{velocity output="false"}}
 #macro(displaySectionNavigationShortcuts)
-#set($discard = $xwiki.ssx.use('Documentation.Code.SectionMacros'))
-#set($discard = $doc.use('Documentation.Code.SectionClass'))
-#set($previousSectionReference = $doc.getValue('previousSection'))
-#set($previousSectionNumbering = $services.documentation.numberingManager.getFullNumbering($previousSectionReference))
-#set($nextSectionReference = $doc.getValue('nextSection'))
-#set($nextSectionNumbering = $services.documentation.numberingManager.getFullNumbering($nextSectionReference))
+## Make sure that we are dealing with a document having a SectionMacro before proceeding
+#if ($doc.getObject('Documentation.Code.SectionClass') != $NULL)
+  #set($discard = $xwiki.ssx.use('Documentation.Code.SectionMacros'))
+  #set($discard = $doc.use('Documentation.Code.SectionClass'))
+  #set($previousSectionReference = $doc.getValue('previousSection'))
+  #set($previousSectionNumbering = $services.documentation.numberingManager.getFullNumbering($previousSectionReference))
+  #set($nextSectionReference = $doc.getValue('nextSection'))
+  #set($nextSectionNumbering = $services.documentation.numberingManager.getFullNumbering($nextSectionReference))
 {{html clean="false"}}
 &lt;div class="row documentation-navigation"&gt;
   &lt;div class="col-md-6 previous-section"&gt;
@@ -77,6 +79,7 @@
   &lt;/div&gt;
 &lt;/div&gt;
 {{/html}}
+#end
 #end
 {{/velocity}}</content>
   <object>
