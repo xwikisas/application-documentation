@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -338,6 +338,44 @@
       <defaultWeb/>
       <nameField/>
       <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>11</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>12</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>doc.reference=Document|icon.theme=Icon theme|locale=Language|request.base=Request base URL|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>10</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
       <code>
         <disabled>0</disabled>
         <editor>Text</editor>
@@ -444,6 +482,15 @@
       </visibility>
     </class>
     <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context/>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
       <code>{{velocity output="false"}}
   #set($discard = $xwiki.jsfx.use('js/xwiki/table/tablefilterNsort.js', true))
   #set($discard = $xwiki.jsx.use('Documentation.Code.DocumentationTable'))
@@ -456,7 +503,7 @@
   ## Building the table view of the sections
   #macro(displayTableSections $parentReference)
     #set($sectionParentDocument = $xwiki.getDocument($parentReference))
-    #set($sectionChildren = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $services.model.serialize($parentReference, 'local')).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).execute())
+    #set($sectionChildren = $services.query.hql("select obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $services.model.serialize($parentReference, 'local')).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).execute())
     #foreach($sectionChild in $sectionChildren)
       #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
       #set($sectionChildDocument = $xwiki.getDocument($sectionChildRef))
@@ -577,6 +624,15 @@
         <unmodifiable>0</unmodifiable>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
     </class>
     <property>
       <defaultValue/>
@@ -589,6 +645,9 @@
     </property>
     <property>
       <name>root</name>
+    </property>
+    <property>
+      <type/>
     </property>
   </object>
 </xwikidoc>

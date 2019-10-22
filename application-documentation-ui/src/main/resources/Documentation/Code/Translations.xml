@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -45,19 +45,29 @@ home.sheet.toc=Table of contents
 home.sheet.filters=Filters
 home.sheet.table.section=Section
 home.sheet.table.parentsection=Parent section
+
 # Section sheet
 documentation.navigation.previousSection=Previous section :
 documentation.navigation.nextSection=Next section :
+
 # Panels
 documentation.panel.navigation.title=Navigation
+
 # Creation sheet
 section.create.sheet.title=Create new section
 section.create.previoussibling.label=Insert page after ...
 section.create.previoussibling.hint=The sibling page in the documentation after which the current page will be added.
+
 # Rename sheet
 section.rename.sheet.title=Move/Rename section [[{0}&gt;&gt;{1}]]
 section.rename.sheet.error=Something went wrong. The document could not be moved to the new location.
-section.rename.sheet.metadataupdate=Section metadata update</content>
+section.rename.sheet.metadataupdate=Section metadata update
+
+# Code space
+documentation.code.codePagesWarning=This page and its children contain internal content used by the documentation application for its own use.
+
+# Application panel entry
+documentation.panels.quicklink=Documentation</content>
   <object>
     <name>Documentation.Code.Translations</name>
     <number>0</number>
