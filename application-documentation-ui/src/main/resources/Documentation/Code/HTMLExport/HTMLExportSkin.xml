@@ -1,0 +1,1002 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.3" reference="Documentation.Code.HTMLExport.HTMLExportSkin" locale="">
+  <web>Documentation.Code.HTMLExport</web>
+  <name>HTMLExportSkin</name>
+  <language/>
+  <defaultLanguage/>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1451602800000</creationDate>
+  <parent>WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1451602800000</date>
+  <contentUpdateDate>1451602800000</contentUpdateDate>
+  <version>1.1</version>
+  <title>HTMLExportSkin</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.1</syntaxId>
+  <hidden>true</hidden>
+  <content/>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>0</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>006757e9-23de-4cf6-8604-e4af1f3aedbb</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original source : https://github.com/xwiki/xwiki-platform/blob/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-web/src/main/webapp/templates/endpage.vm
+    &lt;/div&gt;## contentcolumn
+#template("leftpanels.vm")
+  &lt;/div&gt;## leftsidecolumns
+#template("rightpanels.vm")
+&lt;div class="clearfloats"&gt;&lt;/div&gt;
+  &lt;/div&gt;## contentcontainerinner
+&lt;/div&gt;## contentcontainer
+## Start of customization : remove the footer in order to cleanup the UI page as much as possible
+###template("footer.vm")
+#template("htmlfooter.vm")</content>
+    </property>
+    <property>
+      <path>endpage.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>2</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>28d48f64-cd59-48bd-aa04-92522fece82a</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## We need to add those variables here (and not in the SectionSheet) as the content of the document isn't rendered at the good moment to override those vars (they are either already used or will be overriden by other .vm)
+#set($displayMainMenu = $false)
+#set($showLeftPanels = 0)
+#set($showRightPanels = 0)
+#set($displayDocExtra = $false)
+#set($displayContentMenu = $false)
+#set($discard = $xwiki.ssx.use('Documentation.Code.HTMLExport.HTMLExportSkin'))</content>
+    </property>
+    <property>
+      <path>layoutExtraVars.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>3</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>7807a741-d271-44ed-8ff5-7ce233a3886d</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original source : https://github.com/xwiki/xwiki-platform/blob/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-web/src/main/webapp/templates/documentTags.vm
+
+#template("xwikivars.vm")
+#set($tagsId = 'xdocTags')
+#set($tagErrorMessage = '')
+#set($xredirect = $escapetool.url($doc.getURL('view', "#${tagsId}")))
+##
+##
+##
+#macro(displayTag $tag)
+  &lt;span class="tag-wrapper"&gt;&lt;span class="tag"&gt;&lt;a href="$xwiki.getURL('Main.Tags', 'view', "do=viewTag&amp;amp;tag=$!{escapetool.url($tag)}")"&gt;$!{escapetool.xml($tag)}&lt;/a&gt;&lt;/span&gt;#if($hasedit)&lt;span class="separator"&gt;[&lt;/span&gt;&lt;a href="$doc.getURL('view', "xpage=documentTags&amp;amp;xaction=delete&amp;amp;tag=$!{escapetool.url($tag)}&amp;amp;xredirect=${xredirect}")" class="tag-tool tag-delete" title="$services.localization.render('core.tags.remove.tooltip')"&gt;X&lt;/a&gt;&lt;span class="separator"&gt;]&lt;/span&gt;#end&lt;/span&gt;
+#end
+##
+#macro(removeTag $tag)
+  #if($xwiki.tag)
+    #set($result = $xwiki.tag.removeTagFromDocument($tag, $doc.fullName))
+    #if($result == 'OK' &amp;&amp; "$!{request.ajax}" != '')
+      $response.setStatus(200)
+      #set($responseMessage = 'OK')
+    #elseif($result == 'NO_EFFECT')
+      $response.setStatus(409)
+      #set($responseMessage = $services.localization.render('core.tags.remove.error.notFound', [$tag]))
+    #elseif($result == 'NOT_ALLOWED')
+      $response.setStatus(403)
+      #set($responseMessage = $services.localization.render('core.tags.remove.error.notAllowed', [$tag]))
+    #elseif($result == 'FAILED')
+      $response.setStatus(500)
+      #set($responseMessage = $services.localization.render('core.tags.remove.error.failed', [$tag]))
+    #end
+    #if("$!{request.ajax}" != '')
+      $!responseMessage
+    #elseif("$!{request.xredirect}" != '')
+      $response.sendRedirect($request.xredirect)
+    #end
+  #else
+    ## TODO
+  #end
+#end
+##
+#macro(addTag $tag)
+  #if($xwiki.tag)
+    #set($oldTags = $xwiki.tag.getTagsFromDocument($doc.fullName))
+    #set($result = $xwiki.tag.addTagsToDocument($tag, $doc.fullName))
+    #if($result == 'OK' &amp;&amp; "$!{request.ajax}" != '')
+      #set($newTags = $xwiki.tag.getTagsFromDocument($doc.fullName))
+      #set($discard = $newTags.removeAll($oldTags))
+      #foreach($t in $newTags)
+        #if($t != '' &amp;&amp; !$oldTags.contains($t))
+          #displayTag($t)
+        #end
+      #end
+    #elseif($result == 'NO_EFFECT')
+      $response.setStatus(409)
+      #set($tagErrorMessage = $services.localization.render('core.tags.add.error.alreadySet', [$tag]))
+    #elseif($result == 'NOT_ALLOWED')
+      $response.setStatus(403)
+      #set($tagErrorMessage = $services.localization.render('core.tags.add.error.notAllowed', [$tag]))
+    #elseif($result == 'FAILED')
+      $response.setStatus(500)
+      #set($tagErrorMessage = $services.localization.render('core.tags.add.error.failed', [$tag]))
+    #end
+    #if("$!{request.ajax}" != '')
+      $tagErrorMessage
+    #elseif("$!{request.xredirect}" != '')
+      $response.sendRedirect($request.xredirect)
+    #end
+  #else
+    ## TODO
+  #end
+#end
+##
+#macro(displayAddForm)
+  &lt;form action="$doc.getURL('view', "xpage=documentTags&amp;amp;xaction=add&amp;amp;xredirect=${xredirect}")" method="post" class="tag-add-form"&gt;
+    &lt;div&gt;
+      ## CSRF prevention
+      &lt;div class="hidden"&gt;&lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;&lt;/div&gt;
+      &lt;label for="tag"&gt;$services.localization.render('core.tags.add.label')&lt;br/&gt;
+      &lt;input class="input-tag" type="text" id="tag" name="tag" autocomplete="off"/&gt;&lt;/label&gt;&lt;br/&gt;
+      &lt;span class="buttonwrapper"&gt;&lt;input class="button button-add-tag" type="submit" value="$services.localization.render('core.tags.add.submit')"/&gt;&lt;/span&gt;
+      &lt;span class="buttonwrapper"&gt;&lt;a class="button button-add-tag-cancel" href="$doc.getURL('view', "#${tagsId}")"&gt;$services.localization.render('core.tags.add.cancel')&lt;/a&gt;&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/form&gt;
+#end
+##
+#set($xaction = "$!{request.xaction}")
+#if("$!{request.showTagAddForm}" == 'true' &amp;&amp; "$!{request.ajax}" == '1')
+  #displayAddForm()
+#elseif($xaction == 'delete')
+  #removeTag($request.tag)
+#elseif($xaction == 'add')
+  #addTag($request.tag)
+#else ## display
+  $xwiki.ssfx.use('uicomponents/viewers/tags.css', {'forceSkinAction': true, 'colorTheme': "$!{themeDocFullName}"})##
+  $xwiki.jsfx.use('uicomponents/viewers/tags.js', true)##
+  &lt;div class="doc-tags" id="${tagsId}"&gt;
+  #if($xwiki.tag)
+    #set($hasTagsPlugin = true)
+    #set($tags = $xwiki.tag.getTagsFromDocument($doc.fullName))
+  #else
+    #set($hasTagsPlugin = false)
+    #set($tags = $doc.getTagList())
+  #end
+##   #if($!tags.size() == 0)
+##     No tags
+##   #else
+    $services.localization.render('core.tags.list.label')
+    #foreach($tag in $tags)
+      #displayTag($tag)
+    #end
+##   #end
+  ## ***** Start of customization *****
+  ## Remove the possibility of adding tags to a document during the export
+  #*
+  #if($hasedit)
+    #if($xwiki.tag)
+      &lt;div class="tag-tool tag-add"&gt;#if("$!{request.showTagAddForm}" == '')&lt;a href="$doc.getURL('view', "showTagAddForm=true&amp;amp;$!{escapetool.url(${request.queryString})}#${tagsId}")" title="$services.localization.render('core.tags.add.tooltip')" rel="nofollow"&gt;[+]&lt;/a&gt;#else #displayAddForm()#end&lt;/div&gt;
+    #else
+      ## TODO
+    #end
+  #end
+  *#
+  ## ***** End of customization *****
+  &lt;/div&gt;
+  #if($tagErrorMessage != '')
+    #error($tagErrorMessage)
+  #end
+#end</content>
+    </property>
+    <property>
+      <path>documentTags.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>4</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>602deec1-8b76-455b-8492-4d688fc1d5dd</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original source : https://github.com/xwiki/xwiki-platform/blob/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-flamingo/xwiki-platform-flamingo-skin/xwiki-platform-flamingo-skin-resources/src/main/resources/flamingo/contentfooter.vm
+##
+## Document footer: tags, creation date, modification date
+##
+&lt;div id="xdocFooter"&gt;
+  #template("documentTags.vm")
+  ## ***** Start of customization *****
+  ## Hide authors &amp; creators
+  #*
+  &lt;div id="xdocAuthors"&gt;
+    &lt;div class="xdocCreation"&gt; ## Creation
+      $services.localization.render('core.footer.creation', [$xwiki.getUserName($doc.creator), $xwiki.formatDate($doc.creationDate)])&lt;br/&gt;
+      #if($tdoc.realLocale != $doc.realLocale)
+        $services.localization.render('core.footer.translationCreation', [$tdoc.realLocale, $xwiki.getUserName($tdoc.creator), $xwiki.formatDate($tdoc.creationDate)])&lt;br/&gt;
+      #end
+    &lt;/div&gt;
+  &lt;/div&gt;
+  *#
+  ## ***** End of customization *****
+&lt;/div&gt;
+</content>
+    </property>
+    <property>
+      <path>contentfooter.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>5</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>739c884d-a8d1-46d6-a059-8cfdcb96f511</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original content : https://github.com/xwiki/xwiki-platform/blob/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-flamingo/xwiki-platform-flamingo-skin/xwiki-platform-flamingo-skin-resources/src/main/resources/flamingo/contentheader.vm
+&lt;div class="row document-header"&gt;
+  &lt;div class="document-info col-xs-12 #if($displayContentMenu)col-md-7#end"&gt;
+    ## --------------------------------------------------------
+    ## Display UI Extensions before the title element
+    ## --------------------------------------------------------
+    #foreach ($uix in $services.uix.getExtensions('org.xwiki.platform.template.title.before'))
+      $services.rendering.render($uix.execute(), 'xhtml/1.0')
+    #end
+    &lt;div id="document-title"&gt;&lt;h1&gt;$titleToDisplay&lt;/h1&gt;&lt;/div&gt;
+    ## ***** Start of customization *****
+    ## Remove the last editor
+    #*
+    #if (!$doc.isNew())
+      &lt;div class="xdocLastModification"&gt;
+        #if (!$doc.isMostRecent())
+          $services.localization.render(
+            'core.document.modificationWithVersion',
+            ["&lt;a href='$tdoc.getURL('view', ""rev=$tdoc.version"")'&gt;$tdoc.version&lt;/a&gt;",
+            $xwiki.getUserName($tdoc.author),
+            $xwiki.formatDate($tdoc.date)
+          ])
+        #else
+          $services.localization.render('core.footer.modification', [$xwiki.getUserName($tdoc.author), $xwiki.formatDate($tdoc.date)])
+        #end
+      &lt;/div&gt;
+    #end
+    *#
+    ## ***** End of customization *****
+  &lt;/div&gt;
+  #if($displayContentMenu)
+    &lt;div class="document-menu col-xs-12 col-md-5"&gt;
+      #template("menus_content.vm")
+    &lt;/div&gt;
+  #end
+&lt;/div&gt;
+&lt;hr/&gt;</content>
+    </property>
+    <property>
+      <path>contentheader.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>6</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>b68d4ffd-510a-4732-b193-392980185dab</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original content : https://github.com/xwiki/xwiki-platform/blob/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-flamingo/xwiki-platform-flamingo-skin/xwiki-platform-flamingo-skin-resources/src/main/resources/flamingo/hierarchy.vm
+
+#template('xwikivars.vm')
+#if($isInServletMode) ## Visible only in a page
+  #template('hierarchy_macros.vm')
+  #######################################################
+  ##                   CONTROLLER
+  ##
+  ## Call the appropiate breadcrumb depending on the 
+  ## configuration.
+  #######################################################
+  #if($services.parentchild.isParentChildMechanismEnabled())
+    #hierarchy_parentChild()
+  #else
+    ##
+    ## Default mode: display the hierarchy for the current page
+    ##
+    ## ***** Start of customization *****
+    ## Only show the local path to the page, also raise the limit in order to include as much documents as possible in the HTML export
+    #hierarchy($NULL {'id': 'hierarchy', 'local': true, 'limit': 50, 'treeNavigation': true})
+    ## ***** End of customization *****
+  #end
+#end
+</content>
+    </property>
+    <property>
+      <path>hierarchy.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>7</number>
+    <className>XWiki.XWikiSkinFileOverrideClass</className>
+    <guid>e208da46-5cf7-4989-a7a1-136240a73485</guid>
+    <class>
+      <name>XWiki.XWikiSkinFileOverrideClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <content>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>content</name>
+        <number>2</number>
+        <prettyName>Content</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <path>
+        <disabled>0</disabled>
+        <name>path</name>
+        <number>1</number>
+        <prettyName>Path</prettyName>
+        <size>255</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </path>
+    </class>
+    <property>
+      <content>## Original content : https://raw.githubusercontent.com/xwiki/xwiki-platform/23f9ee865c1b5ed9ca755cb91d53555c11e58128/xwiki-platform-core/xwiki-platform-web/src/main/webapp/templates/hierarchy_macros.vm
+
+#template('documentTree_macros.vm')
+
+#**
+ * Display the path of the specified entity within the hierarchy.
+ *
+ * @param $entityReference the entity for which to display the hierarchy path, defaults on the current document
+ * @param $options various configuration options; see #getHierarchyPath() and #displayHierarchyPath()
+ *#
+#macro (hierarchy $entityReference $options)
+  #if (!$options)
+    #set ($options = {})
+  #else
+    ## We need to assign the options to a variable in case the user has passed a literal map.
+    #set ($options = $options)
+  #end
+  #if (!$entityReference)
+    ## Default on the current (translated) document.
+    #set ($entityReference = $tdoc.documentReference)
+    #if ($entityReference.name == $services.model.getEntityReference('DOCUMENT', 'default').name)
+      ## The current document is a space home page. Use the space reference instead. This is important for preview mode
+      ## and when editing a document section because $tdoc needs to be mapped to the right entity reference in the
+      ## 'entities' configuration option.
+      #set ($entityReference = $entityReference.parent)
+    #end
+    #if (!$options.entities)
+      #set ($discard = $options.put('entities', {}))
+    #end
+    #set ($discard = $options.entities.put($entityReference, $tdoc))
+  #end
+  #getHierarchyPath($entityReference $path $options)
+  #if ($options.plain)
+    #getHierarchyPathLabels($path $labels $options)
+    $stringtool.join($labels, ' / ')
+  #else
+    #getHierarchyPathData($path $data $options)
+    ## At this point, we need to know the *document* actually pointed by the breadcrumb to give the correct reference
+    ## to #displayHierarchyPath(), which displays this reference as hidden data.
+    #if ($entityReference.type == 'SPACE')
+       #set ($entityReference = $services.model.createEntityReference('WebHome', 'DOCUMENT', $entityReference))
+    #end
+    #displayHierarchyPath($data $options $entityReference)
+  #end
+#end
+
+#**
+ * Compute the path of the specified entity within the hierarchy.
+ *
+ * @param $entityReference the entity for which to compute the path
+ * @options various configuration options; default values are {
+ *   local: false, // whether to compute the local path or not (i.e. including the wiki reference or not)
+ *   excludeSelf: false, // whether to exclude the passed reference from the path
+ *   limit: 0 // the maximum number of path elements (limit/2 on the left and the rest of the right)
+ * }
+ *#
+#macro (getHierarchyPath $entityReference $return $options)
+  #if (!$options)
+    #set ($options = {})
+  #end
+  #set ($macro.path = [])
+  #set ($discard = $macro.path.addAll($entityReference.reversedReferenceChain))
+  #if ($macro.path.get(0).type == 'WIKI')
+    #set ($wikiName = $macro.path.get(0).name)
+    #if ($options.local)
+      ## Remove the wiki reference.
+      #set ($discard = $macro.path.remove(0))
+    #elseif ($wikiName != $xcontext.mainWikiName
+        &amp;&amp; $xcontext.userReference.wikiReference.name == $xcontext.mainWikiName
+        &amp;&amp; $services.wiki.user.getUserScope($wikiName) != 'LOCAL_ONLY')
+      ## Global users should be able to navigate to the main wiki from a subwiki that accepts global users.
+      #set ($discard = $macro.path.add(0, $services.model.createWikiReference($xcontext.mainWikiName)))
+    #end
+  #end
+  ## Merge the space reference with the space home page reference.
+  #foreach ($reference in $macro.path)
+    #if ($reference.type == 'DOCUMENT' &amp;&amp; $foreach.index &gt; 0
+        &amp;&amp; $reference.name == $services.model.getEntityReference('DOCUMENT', 'default').name
+        &amp;&amp; $macro.path.get($mathtool.sub($foreach.index, 1)).type == 'SPACE')
+      #set ($discard = $macro.path.remove($reference))
+      #break
+    #end
+  #end
+  #if ($options.excludeSelf)
+    ## Remove the last reference.
+    #set ($discard = $macro.path.remove($mathtool.sub($macro.path.size(), 1)))
+  #end
+  ## Limit the number of path elements (by removing elements in the middle of the path).
+  #set ($size = $macro.path.size())
+  #if ($options.limit &amp;&amp; $options.limit &gt; 0 &amp;&amp; $options.limit &lt; $size)
+    #set ($left = $options.limit / 2)
+    #set ($right = $size - ($options.limit - $left))
+    #set ($limitedPath = [])
+    #set ($discard = $limitedPath.addAll($macro.path.subList(0, $left)))
+    #set ($discard = $limitedPath.add({'type': 'ellipsis'}))
+    #set ($discard = $limitedPath.addAll($macro.path.subList($right, $size)))
+    #set ($macro.path = $limitedPath)
+  #end
+  #set ($return = $NULL)
+  #setVariable("$return" $macro.path)
+#end
+
+#**
+ * Displays a hierarchy path computed with #getHierarchyPathData().
+ *
+ * @param $pathData the data of the hierarchy path to display
+ * @param $options various display options; default values are {
+ *   id: null, // the value of the id attribute to set on the container element
+ *   excludeSelf: false, // whether the target reference has been excluded from the path
+ *   selfIsActive: true, // whether the target reference should be marked as active or not
+ *   limit: null // if any, enable the user to click on the ellipsis to expand the breadcrumb dynamically
+ * }
+ * @param $entityReference (required if $option.limit is not null) the reference to the concerned entity.
+ *#
+#macro (displayHierarchyPath $pathData $options $entityReference)
+  #if (!$options)
+    #set ($options = {})
+  #end
+  #set ($breadCrumbClassNames = 'breadcrumb')
+  #set ($breadCrumbParameters = '')
+  #if ($options.limit)
+    #set ($discard = $xwiki.jsfx.use('uicomponents/hierarchy/hierarchy.js', {'forceSkinAction': true}))
+    ## Tag the breadcrumb as expandable, so the JS can enable the 'expand' feature
+    #set ($breadCrumbClassNames = "${breadCrumbClassNames} breadcrumb-expandable")
+    ## Store the entity reference into the breadcrumb, so the JS can retreive the full hierarchy
+    #set ($breadCrumbParameters = "data-entity='$escapetool.xml($services.model.serialize($entityReference, 'local'))'")
+    ## Store the options into the breadcrumb, so the JS can have all informations
+    #foreach ($option in $options.keySet())
+      #set ($breadCrumbParameters = "$breadCrumbParameters data-${option.toLowerCase()}='$escapetool.xml($options.get($option))'")
+    #end
+  #end
+  &lt;ol #if("$!options.id" != '')id="$options.id"#end class="$breadCrumbClassNames" $breadCrumbParameters&gt;&lt;li
+    #foreach ($item in $pathData)
+      #set ($classNames = $collectionstool.set)
+      #set ($discard = $classNames.add($item.reference.type.toString().toLowerCase()))
+      #if ($item.classNames)
+        #set ($discard = $classNames.addAll($item.classNames))
+      #end
+      #getTreeNavigation($pathData $foreach.index $options)
+      ## Avoid whitespace characters between the list items (they are visible when display=inline-block).
+      #set ($closingTag = '&lt;/li&gt;&lt;li')
+      #if ($foreach.index == $mathtool.sub($pathData.size(), 1))
+        #if (!$options.excludeSelf &amp;&amp; "$!options.selfIsActive" != 'false')
+          #set ($discard = $classNames.add('active'))
+        #end
+        #set ($closingTag = '')
+      #end
+      class="$stringtool.join($classNames, ' ')"&gt;#if ($item.url)&lt;a href="$item.url"
+        &gt;#end$item.label#if ($item.url)&lt;/a&gt;#end$treeNavigation$closingTag##
+    #end##
+  &lt;/li&gt;&lt;/ol&gt;
+#end
+
+#macro (getTreeNavigation $pathData $index $options)
+  #set ($treeNavigation = '')
+  ## ********** Start of customization **********
+  #set($serializedDocumentReference = "${services.model.serialize($pathData.get($index).reference, 'local')}.WebHome")
+  #set($results = $services.query.hql("select distinct obj.name from BaseObject obj, StringProperty parent, LongProperty numbering where obj.className = 'Documentation.Code.SectionClass' and obj.id = parent.id.id and obj.id = numbering.id.id and numbering.id.name = 'numbering' and parent.id.name = 'parentSection' and parent.value = :parentValue order by numbering.value asc").bindValue('parentValue', $serializedDocumentReference).execute())
+
+  #if ($results.size() &gt; 0)
+    #set ($discard = $classNames.add('dropdown'))
+    #set($content = '&lt;ul&gt;')
+    #foreach($element in $results)
+      #set($document = $xwiki.getDocument($element))
+      #set($content = "${content}&lt;li&gt;&lt;a href='$xwiki.getURL($element)'&gt;${document.getRenderedTitle('html/5.0')}&lt;/a&gt;&lt;/li&gt;")
+    #end
+    #set($content = "${content}&lt;/ul&gt;")
+    #set ($treeParams = {
+      'class': 'breadcrumb-tree',
+      'limit': 100,
+      'icons': false,
+      'links': true
+    })
+    #set ($treeToggle = "&lt;span class='dropdown-toggle' data-toggle='dropdown'&gt;$services.icon.renderHTML('caret-down')&lt;/span&gt;")
+    #set ($treeNavigation = "$treeToggle&lt;div class='dropdown-menu'&gt;&lt;div #treeAttributes($treeParams false)&gt;${content}&lt;/div&gt;&lt;/div&gt;")
+  #end
+  ## ********** End of customization **********
+#end
+
+#macro (getHierarchyPathData $path $return $options)
+  #if (!$options)
+    #set ($options = {})
+  #end
+  #getHierarchyPathLabels($path $labels $options)
+  #set ($macro.data = [])
+  #foreach ($reference in $path)
+    #set ($url = $NULL)
+    #getHierarchyPathData_url($reference)
+    #set ($discard = $macro.data.add({
+      'reference': $reference,
+      'label': $labels.get($foreach.index),
+      'url': $url
+    }))
+  #end
+  #set ($return = $NULL)
+  #setVariable("$return" $macro.data)
+#end
+
+#macro (getHierarchyPathData_url $reference)
+  #if ($reference.type == 'OBJECT')
+    #if ($services.security.authorization.hasAccess('edit', $reference))
+      #if ($reference.objectNumber)
+        #set ($objectNumber = $reference.objectNumber)
+        #set ($objectType = $services.model.serialize($reference.xClassReference, 'local'))
+      #else
+        #set ($objectNumber = $stringtool.substringAfterLast($stringtool.removeEnd($reference.name, ']'), '['))
+        #set ($objectType = $stringtool.substringBeforeLast($reference.name, '['))
+      #end
+      #set ($url = $xwiki.getURL($reference, 'edit', $escapetool.url({
+        'editor': 'object',
+        'classname': $objectType,
+        'object': $objectNumber
+      })))
+    #end
+  #elseif ($reference.type != 'ellipsis' &amp;&amp; $services.security.authorization.hasAccess('view', $reference))
+    #set ($url = $xwiki.getURL($reference))
+  #end
+#end
+
+#**
+ * Collects the labels of the entities from the given path.
+ *
+ * @param $path a path in the hierarchy
+ * @param $options various display options; default values are {
+ *   entities: {}, // a map of (reference, entity) pairs holding unsaved entities that should be used for display
+ *   plain: false, // whether to use plain text or HTML
+ *   displayTitle: true // whether to display the title of the documents or the reference name
+ *#
+#macro (getHierarchyPathLabels $path $return $options)
+  #if (!$options)
+    #set ($options = {})
+  #end
+  #set ($macro.labels = [])
+  #foreach ($reference in $path)
+    #set ($label = $escapetool.xml($reference.name))
+    #if (($reference.type == 'SPACE' || $reference.type == 'DOCUMENT') &amp;&amp; "$!options.displayTitle" != 'false')
+      ## Check if there is an unsaved document with this reference.
+      #set ($document = $options.entities.get($reference))
+      #if (!$document)
+        ## Get the saved document.
+        #set ($document = $xwiki.getDocument($reference).translatedDocument)
+      #end
+      #if ($document)
+        #set ($label = $escapetool.xml($document.plainTitle))
+      #end
+    #elseif ($reference.type == 'WIKI')
+      #if ($foreach.index == 0 &amp;&amp; !$options.plain)
+        #if ($services.icon)
+          #set ($label = $services.icon.renderHTML('home'))
+        #else
+          ## Fallback on the Silk icon set for now as it is bundled by default.
+          #set ($label = "&lt;img src=""$xwiki.getSkinFile('icons/silk/house.png')"" /&gt;")
+        #end
+      #else
+        #set ($wikiPrettyName = $services.wiki.getById($reference.name).prettyName)
+        #if ("$!wikiPrettyName" != '')
+          #set ($label = $escapetool.xml($wikiPrettyName))
+        #end
+      #end
+    #elseif ($reference.type == 'ellipsis')
+      #if ($options.plain)
+        #set ($label = '...')
+      #else
+        #set ($label = '&amp;hellip;')
+      #end
+    #end
+    #set ($discard = $macro.labels.add($label))
+  #end
+  #set ($return = $NULL)
+  #setVariable("$return" $macro.labels)
+#end
+
+#*
+ * Display the parents of a document based on the old parent/child mechanism.
+ *#
+#macro (hierarchy_parentChild)
+  #if ("$!doc.parent" !=  '' || $xcontext.action == 'edit' || $xcontext.action == 'inline')
+    #set ($path = [])
+    #set ($discard = $path.addAll($services.parentchild.getParentsBasedOnParentChildRelationship($doc.documentReference)))
+    #set ($discard = $path.add($doc.documentReference))
+    #set ($options = {
+      'id': 'hierarchy',
+      'entities': {
+        $doc.documentReference: $tdoc
+      }
+    })
+    #getHierarchyPathData($path $data $options)
+    #displayHierarchyPath($data $options)
+  #end
+#end</content>
+    </property>
+    <property>
+      <path>hierarchy_macros.vm</path>
+    </property>
+  </object>
+  <object>
+    <name>Documentation.Code.HTMLExport.HTMLExportSkin</name>
+    <number>0</number>
+    <className>XWiki.XWikiSkins</className>
+    <guid>0e00edbb-12ed-41a8-b39e-b8564772c4ab</guid>
+    <class>
+      <name>XWiki.XWikiSkins</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <baseskin>
+        <disabled>0</disabled>
+        <name>baseskin</name>
+        <number>2</number>
+        <prettyName>Base Skin</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </baseskin>
+      <edit.vm>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>edit.vm</name>
+        <number>10</number>
+        <prettyName>Edit</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </edit.vm>
+      <footer.vm>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>footer.vm</name>
+        <number>7</number>
+        <prettyName>Footer</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </footer.vm>
+      <header.vm>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>header.vm</name>
+        <number>6</number>
+        <prettyName>Header</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </header.vm>
+      <logo>
+        <disabled>0</disabled>
+        <name>logo</name>
+        <number>3</number>
+        <prettyName>Logo</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </logo>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <outputSyntax>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <multiSelect>0</multiSelect>
+        <name>outputSyntax</name>
+        <number>4</number>
+        <prettyName>Output Syntax</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>html/5.0=HTML 5|xhtml/1.0=XHTML 1.0</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </outputSyntax>
+      <style.css>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>style.css</name>
+        <number>5</number>
+        <prettyName>Style</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </style.css>
+      <view.vm>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>view.vm</name>
+        <number>9</number>
+        <prettyName>View</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </view.vm>
+      <viewheader.vm>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>viewheader.vm</name>
+        <number>8</number>
+        <prettyName>View Header</prettyName>
+        <rows>15</rows>
+        <size>80</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </viewheader.vm>
+    </class>
+    <property>
+      <baseskin>XWiki.DefaultSkin</baseskin>
+    </property>
+    <property>
+      <edit.vm/>
+    </property>
+    <property>
+      <footer.vm/>
+    </property>
+    <property>
+      <header.vm/>
+    </property>
+    <property>
+      <logo/>
+    </property>
+    <property>
+      <name>HTMLExportSkin</name>
+    </property>
+    <property>
+      <outputSyntax/>
+    </property>
+    <property>
+      <style.css/>
+    </property>
+    <property>
+      <view.vm/>
+    </property>
+    <property>
+      <viewheader.vm/>
+    </property>
+  </object>
+</xwikidoc>

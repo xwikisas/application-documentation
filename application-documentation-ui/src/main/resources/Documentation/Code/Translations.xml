@@ -67,7 +67,11 @@ section.rename.sheet.metadataupdate=Section metadata update
 documentation.code.codePagesWarning=This page and its children contain internal content used by the documentation application for its own use.
 
 # Application panel entry
-documentation.panels.quicklink=Documentation</content>
+documentation.panels.quicklink=Documentation
+
+# Export panel
+documentation.panels.htmlExport.title=Export
+documentation.panels.htmlExport.export=Export the documentation in HTML</content>
   <object>
     <name>Documentation.Code.Translations</name>
     <number>0</number>
