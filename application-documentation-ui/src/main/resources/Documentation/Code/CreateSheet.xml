@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!--
  * See the NOTICE file distributed with this work for additional
@@ -59,8 +59,9 @@
 #set ($name = "$!request.name")
 #set ($numbering = "$!request.numbering")
 ##
-## In case the form was submitted with the expected non-null values, compute the URL and redirect to it
 #if($request.create == '1' &amp;&amp; "$!name" != '' &amp;&amp; "$!parentspace" != '')
+  #set($logger = $services.logging.getLogger('com.xwiki.documentation.create.sheet'))
+  ##set($discard = $services.logging.setLevel('com.xwiki.documentation.create.sheet', 'debug'))
   ##
   ## WebHome name
   #set ($webhome = $services.model.getEntityReference('DOCUMENT', 'default').name)
@@ -69,9 +70,31 @@
   #set ($newParentSpace = $services.model.resolveSpace($parentspace))
   #set ($newSpaceReference = $services.model.createSpaceReference($name, $newParentSpace))
   #set ($newDocumentReference = $services.model.createDocumentReference($webhome, $newSpaceReference))
-  ##
-  ## Redirect to the new location, in edit mode, with some parameters used for prefilling some fields
-  $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "template=${request.template}&amp;title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}&amp;numbering=${escapetool.url($!numbering)}"))
+  #set ($templateDocumentReference = $services.model.resolveDocument('Documentation.Code.SectionTemplate'))
+
+  ## Check the rights of the user
+  #if(!$services.security.authorization.hasAccess('edit', $newDocumentReference))
+    #set($createExceptionMessage = "The user does not have sufficient rights to create a document in this space : $newDocumentReference")
+  #elseif($xwiki.exists($newDocumentReference))
+    #set($createExceptionMessage = 'The document already exists.')
+  #else
+    ## Create the doc
+    #set($newDocument = $xwiki.getDocument($newDocumentReference))
+    #set($newXWikiDocument = $newDocument.getDocument())
+    ## Inject the template
+    #set($discard = $newXWikiDocument.readFromTemplate($templateDocumentReference, $xcontext.context))
+    ## Set numbering and authors
+    #set($discard = $newDocument.use('Documentation.Code.SectionClass'))
+    #set($discard = $newDocument.set('numbering', $numbering))
+    #set($discard = $newDocument.setTitle($title))
+    #set($currentUserReference = $xcontext.userReference)
+    #set($discard = $newXWikiDocument.setAuthorReference($currentUserReference))
+    #set($discard = $newXWikiDocument.setCreatorReference($currentUserReference))
+    ## Save and go on …
+    #set($discard = $newDocument.save())
+    ## Redirect to the new location, in edit mode
+    $response.sendRedirect($xwiki.getURL($newDocumentReference, 'edit', "title=${escapetool.url($title)}&amp;parent=${escapetool.url($parentspace)}"))
+  #end
 #end
 ##
 #set($exception = $createException)
@@ -116,6 +139,13 @@
   ## By the past, it was "xwiki/create.js" which created this field, but it was causing problems when the user sent the
   ## form before the JavaScript code was executed.
   &lt;input type="hidden" name="template" value="${template}" /&gt;
+  #if("$!createExceptionMessage" != '')
+  &lt;div class='row'&gt;
+    &lt;div class='box errormessage'&gt;
+      $services.localization.render($createExceptionMessage)
+    &lt;/div&gt;
+  &lt;/div&gt;
+  #end
   ##
   ## Display the location picker.
   &lt;div class='col-xs-12 col-lg-6'&gt;
