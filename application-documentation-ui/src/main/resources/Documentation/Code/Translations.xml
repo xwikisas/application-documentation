@@ -71,7 +71,10 @@ documentation.panels.quicklink=Documentation
 
 # Export panel
 documentation.panels.htmlExport.title=Export
-documentation.panels.htmlExport.export=Export the documentation in HTML</content>
+documentation.panels.htmlExport.export=Export the documentation in HTML
+    
+# Section sheet
+section.sheet.notIncludedInExport=The following section will not be included as part of a documentation export.</content>
   <object>
     <name>Documentation.Code.Translations</name>
     <number>0</number>
