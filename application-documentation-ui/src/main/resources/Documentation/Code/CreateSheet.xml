@@ -27,12 +27,12 @@
   <defaultLanguage/>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
-  <creationDate>1451602800000</creationDate>
+  <creationDate>1564043686000</creationDate>
   <parent>WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <date>1451602800000</date>
-  <contentUpdateDate>1451602800000</contentUpdateDate>
+  <date>1575645323000</date>
+  <contentUpdateDate>1575645323000</contentUpdateDate>
   <version>1.1</version>
   <title/>
   <comment/>
@@ -511,8 +511,7 @@
       <cache>long</cache>
     </property>
     <property>
-      <code>#hierarchy,
-.document-header,
+      <code>.document-header,
 .xcontent hr,
 #xdocFooter {
   display: none;
