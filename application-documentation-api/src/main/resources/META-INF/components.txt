@@ -1,3 +1,4 @@
+com.xwiki.documentation.internal.DefaultSectionManager
 com.xwiki.documentation.internal.DefaultSectionNumberingManager
 com.xwiki.documentation.internal.DefaultSectionOrderingManager
 com.xwiki.documentation.internal.DefaultSectionParentManager

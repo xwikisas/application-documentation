@@ -28,6 +28,7 @@ import javax.inject.Singleton;
 import org.xwiki.component.annotation.Component;
 import com.xwiki.documentation.DocumentationBridge;
 import com.xwiki.documentation.DocumentationException;
+import com.xwiki.documentation.SectionManager;
 import com.xwiki.documentation.SectionNumberingManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
@@ -87,28 +88,15 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
     @Named("current")
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
-    @Override
-    public boolean isSection(DocumentReference documentReference) throws DocumentationException
-    {
-        try {
-            String hqlQuery = "select sectionObject.name from BaseObject sectionObject "
-                    + "where sectionObject.className = 'Documentation.Code.SectionClass' "
-                    + "and sectionObject.name = :docName";
-            return queryManager.createQuery(hqlQuery, Query.HQL)
-                    .bindValue("docName", entityReferenceSerializer.serialize(documentReference))
-                    .execute().size() > 0;
-        } catch (QueryException e) {
-            throw new DocumentationException(
-                    String.format("Failed to verify if document [%s] is a section.", documentReference), e);
-        }
-    }
+    @Inject
+    private SectionManager sectionManager;
 
     @Override
     public String getFullNumbering(DocumentReference documentReference) throws DocumentationException
     {
         // Check fist if the current document has a numbering, else it would be inefficient to load other docs
         // in memory.
-        if (isSection(documentReference)) {
+        if (sectionManager.isSection(documentReference)) {
             // Get the current numbering
             long currentDocumentNumbering = documentationBridge.getNumbering(documentReference);
 
@@ -156,7 +144,7 @@ public class DefaultSectionNumberingManager implements SectionNumberingManager
     {
         if (previousSiblingReference == null) {
             return 1;
-        } else if (isSection(previousSiblingReference)) {
+        } else if (sectionManager.isSection(previousSiblingReference)) {
             return documentationBridge.getNumbering(previousSiblingReference) + 1;
         } else {
             throw new DocumentationException(

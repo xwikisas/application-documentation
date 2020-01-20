@@ -33,6 +33,7 @@ import org.xwiki.component.annotation.Role;
 import com.xwiki.documentation.DocumentationBridge;
 import com.xwiki.documentation.DocumentationException;
 import org.xwiki.model.reference.DocumentReference;
+import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.LocalDocumentReference;
 import org.xwiki.model.reference.WikiReference;
@@ -66,12 +67,18 @@ public class DefaultDocumentationBridge implements DocumentationBridge
 
     static final String PARENT_SECTION_PROPERTY = "parentSection";
 
+    static final String IS_INCLUDED_IN_EXPORTS_PROPERTY = "includeInExports";
+
     @Inject
     private Provider<XWikiContext> xContextProvider;
 
     @Inject
     @Named("local")
     private EntityReferenceSerializer<String> entityReferenceSerializer;
+
+    @Inject
+    @Named("current")
+    private DocumentReferenceResolver<String> stringDocumentReferenceResolver;
 
     @Override
     public long getNumbering(DocumentReference documentReference) throws DocumentationException
@@ -155,6 +162,47 @@ public class DefaultDocumentationBridge implements DocumentationBridge
                     put(PARENT_SECTION_PROPERTY, parentSection);
                 }}
         );
+    }
+
+    @Override
+    public DocumentReference getParentSection(DocumentReference documentReference)
+            throws DocumentationException
+    {
+        try {
+            XWikiContext xContext = xContextProvider.get();
+            XWiki xwiki = xContext.getWiki();
+            XWikiDocument doc = xwiki.getDocument(documentReference, xContext);
+
+            BaseObject obj = doc.getXObject(
+                    new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+            String parentSection = obj.getStringValue(PARENT_SECTION_PROPERTY);
+
+            if (parentSection != null && !StringUtils.isBlank(parentSection)) {
+                return stringDocumentReferenceResolver.resolve(parentSection);
+            } else {
+                return null;
+            }
+        } catch (XWikiException e) {
+            throw new DocumentationException(
+                    String.format("Failed to get parent section for document [%s].", documentReference));
+        }
+    }
+
+    @Override
+    public boolean getIsIncludedInExports(DocumentReference documentReference) throws DocumentationException
+    {
+        try {
+            XWikiContext xContext = xContextProvider.get();
+            XWiki xwiki = xContext.getWiki();
+            XWikiDocument doc = xwiki.getDocument(documentReference, xContext);
+
+            BaseObject obj = doc.getXObject(
+                    new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+            return obj.getIntValue(IS_INCLUDED_IN_EXPORTS_PROPERTY, 1) == 1;
+        } catch (XWikiException e) {
+            throw new DocumentationException(
+                    String.format("Failed to get isIncludedInExports boolean for document [%s].", documentReference));
+        }
     }
 
     private void updateDocumentSections(DocumentReference documentReference, Map<String, DocumentReference> sections)

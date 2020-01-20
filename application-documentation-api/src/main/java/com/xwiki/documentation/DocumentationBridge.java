@@ -91,4 +91,18 @@ public interface DocumentationBridge
      * @throws DocumentationException if an error happens
      */
     void setParent(DocumentReference documentReference, DocumentReference parentSection) throws DocumentationException;
+
+    /**
+     * @param documentReference a reference to the section to inspect
+     * @return a {@link DocumentReference} to the parent section of the given section or null if none is defined
+     * @throws DocumentationException if an error happens
+     */
+    DocumentReference getParentSection(DocumentReference documentReference) throws DocumentationException;
+
+    /**
+     * @param documentReference a reference to the section to inspect
+     * @return true if the section is included in exports, false otherwise
+     * @throws DocumentationException if an error happens
+     */
+    boolean getIsIncludedInExports(DocumentReference documentReference) throws DocumentationException;
 }

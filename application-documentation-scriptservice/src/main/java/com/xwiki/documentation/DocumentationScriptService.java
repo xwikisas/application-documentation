@@ -52,6 +52,9 @@ public class DocumentationScriptService implements ScriptService
     @Inject
     private DocumentAccessBridge documentAccessBridge;
 
+    @Inject
+    private SectionManager sectionManager;
+
     /**
      * @return the {@link SectionNumberingManager}
      */
@@ -82,7 +85,7 @@ public class DocumentationScriptService implements ScriptService
      */
     public boolean isSection() throws DocumentationException
     {
-        return sectionNumberingManager.isSection(documentAccessBridge.getCurrentDocumentReference());
+        return sectionManager.isSection(documentAccessBridge.getCurrentDocumentReference());
     }
 
     /**
@@ -92,6 +95,15 @@ public class DocumentationScriptService implements ScriptService
     public String getFullNumbering() throws DocumentationException
     {
         return sectionNumberingManager.getFullNumbering(documentAccessBridge.getCurrentDocumentReference());
+    }
+
+    /**
+     * @return true if the current document is a section that should be included in exports, false otherwise
+     * @throws DocumentationException if an error happens
+     */
+    public boolean isIncludedInExports() throws DocumentationException
+    {
+        return sectionManager.isIncludedInExports(documentAccessBridge.getCurrentDocumentReference());
     }
 
     /**

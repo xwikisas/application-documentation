@@ -33,7 +33,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.xwiki.component.annotation.Component;
 import com.xwiki.documentation.DocumentationBridge;
 import com.xwiki.documentation.DocumentationException;
-import com.xwiki.documentation.SectionNumberingManager;
+import com.xwiki.documentation.SectionManager;
 import com.xwiki.documentation.SectionOrderingManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
@@ -79,7 +79,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
     private DocumentReferenceResolver<String> documentReferenceResolver;
 
     @Inject
-    private SectionNumberingManager sectionNumberingManager;
+    private SectionManager sectionManager;
 
     @Override
     public void computePreviousAndNextSections(DocumentReference documentReference)
@@ -103,7 +103,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
             // the parent of the current section
             DocumentReference parentDocumentReference =
                     new DocumentReference(WEB_HOME, (SpaceReference) documentReference.getParent().getParent());
-            if (sectionNumberingManager.isSection(parentDocumentReference)) {
+            if (sectionManager.isSection(parentDocumentReference)) {
                 return parentDocumentReference;
             } else {
                 // We're out of the documentation
@@ -175,7 +175,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                                     (SpaceReference) currentReference.getParent().getParent());
                 }
             } while (nextSectionReference == null
-                    && sectionNumberingManager.isSection(currentReference)
+                    && sectionManager.isSection(currentReference)
                     && currentReference.getSpaceReferences().size() > 0);
 
             return nextSectionReference;
@@ -184,7 +184,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
 
     private DocumentReference getSectionInSpace(SiblingPosition position, DocumentReference documentReference)
             throws DocumentationException {
-        if (sectionNumberingManager.isSection(documentReference)) {
+        if (sectionManager.isSection(documentReference)) {
             long sectionNumbering =
                     (position == SiblingPosition.PREVIOUS)
                             ? documentationBridge.getNumbering(documentReference) - 1

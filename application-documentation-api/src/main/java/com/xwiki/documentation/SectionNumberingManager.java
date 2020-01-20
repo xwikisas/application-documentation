@@ -34,13 +34,6 @@ import org.xwiki.stability.Unstable;
 public interface SectionNumberingManager
 {
     /**
-     * @param documentReference the document to inspect
-     * @return true if the given document has a SectionClass
-     * @throws DocumentationException if an error happens
-     */
-    boolean isSection(DocumentReference documentReference) throws DocumentationException;
-
-    /**
      * Get the full numbering of the given document.
      * @param documentReference the document to use
      * @return the full numbering, something like 1.2.1.3.
