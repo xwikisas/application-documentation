@@ -85,7 +85,7 @@ $doc.display('content')
 
 ##displaySectionNavigationShortcuts()
 #else
-#if ("$!doc.getValue('includeInExports')" == '0' &amp;&amp; $hasEdit)
+#if (!$services.documentation.isIncludedInExports() &amp;&amp; $hasEdit)
 {{warning}}
 $services.localization.render('section.sheet.notIncludedInExport')
 {{/warning}}
