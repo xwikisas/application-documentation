@@ -25,10 +25,10 @@
   <parent>
     <groupId>com.xwiki.documentation</groupId>
     <artifactId>application-documentation</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
   </parent>
   <artifactId>application-documentation-scriptservice</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.1</version>
   <name>Documentation Application - Script Service</name>
   <dependencies>
     <dependency>
