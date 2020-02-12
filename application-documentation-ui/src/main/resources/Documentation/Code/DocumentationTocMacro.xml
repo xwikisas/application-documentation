@@ -208,6 +208,7 @@
     </property>
     <property>
       <code>{{velocity output="false"}}
+  ## Page customized in the context for implementing SCOR-766
   #set($sectionClass = 'Documentation.Code.SectionClass')
   #set($sectionTemplate = 'Documentation.Code.SectionTemplate')
   #set($parentPropName = 'parentSection')
@@ -215,14 +216,17 @@
   ##
   ## Building the hierarchy view (TOC) of sections
   #macro(displaySections $parentReference)
-    #set($sectionChildren = $services.query.hql("select obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $services.model.serialize($parentReference, 'local')).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).execute())
+    #set($sectionChildren = $services.query.hql("select distinct obj.name from BaseObject obj, LongProperty numbering, StringProperty parent where obj.className = :sectionClass and obj.name &lt;&gt; :sectionTemplate and obj.id = numbering.id.id and obj.id = parent.id.id and parent.id.name = :parentPropName and numbering.id.name = :numberingPropName and parent.value = :parentReference order by numbering.value asc").bindValue('parentReference', $services.model.serialize($parentReference, 'local')).bindValue('sectionClass', $sectionClass).bindValue('sectionTemplate', $sectionTemplate).bindValue('parentPropName', $parentPropName).bindValue('numberingPropName', $numberingPropName).execute())
     &lt;ul&gt;
     #foreach($sectionChild in $sectionChildren)
       #set($sectionChildRef = $services.model.resolveDocument($sectionChild))
       #set($sectionChildDocument = $xwiki.getDocument($sectionChildRef))
-      #if($services.security.authorization.hasAccess('view', $sectionChildRef))
-        &lt;li&gt;&lt;a label="$sectionChildDocument.displayTitle" href="$sectionChildDocument.getURL()"&gt;$sectionChildDocument.displayTitle&lt;/a&gt;&lt;/li&gt;
-        #displaySections($sectionChildRef)
+      #if ($services.security.authorization.hasAccess('view', $sectionChildRef))
+        ## Pages marked as "not included in export" are excluded when exporting indeed, but included in standard view mode.
+        #if(!$services.multilingualHtmlExport.isExporting() || $services.documentation.isIncludedInExports($sectionChildRef, false))
+          &lt;li&gt;&lt;a label="$sectionChildDocument.displayTitle" href="$sectionChildDocument.getURL()"&gt;$sectionChildDocument.displayTitle&lt;/a&gt;&lt;/li&gt;
+          #displaySections($sectionChildRef)
+        #end
       #end
     #end
     &lt;/ul&gt;

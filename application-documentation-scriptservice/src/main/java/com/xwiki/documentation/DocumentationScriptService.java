@@ -25,6 +25,7 @@ import javax.inject.Singleton;
 
 import org.xwiki.bridge.DocumentAccessBridge;
 import org.xwiki.component.annotation.Component;
+import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.script.service.ScriptService;
 import org.xwiki.stability.Unstable;
 
@@ -98,13 +99,42 @@ public class DocumentationScriptService implements ScriptService
     }
 
     /**
+     * See {@link SectionManager#getPreviousOrNextIncludedSection(DocumentReference, String)}.
+     *
+     * @param reference the reference of the current document
+     * @param propertyName the name of the property that we should check
+     * @return the reference to the previous or next document
+     * @throws DocumentationException if an error happened
+     */
+    public DocumentReference getPreviousOrNextIncludedSection(DocumentReference reference, String propertyName)
+            throws DocumentationException
+    {
+        return sectionManager.getPreviousOrNextIncludedSection(reference, propertyName);
+    }
+
+    /**
      * @return true if the current document is a section that should be included in exports, false otherwise
      * @throws DocumentationException if an error happens
      */
     public boolean isIncludedInExports() throws DocumentationException
     {
-        return sectionManager.isIncludedInExports(documentAccessBridge.getCurrentDocumentReference());
+        return sectionManager.isIncludedInExports(documentAccessBridge.getCurrentDocumentReference(), false);
     }
+
+    /**
+     * See {@link SectionManager#isIncludedInExports}.
+     *
+     * @param reference a DocumentReference
+     * @param withUpperSpaceCheck true if the parent spaces should be checked for inclusion
+     * @return true if the given reference is configured as included in the export
+     * @throws Exception in case an error occurs
+     */
+
+    public boolean isIncludedInExports(DocumentReference reference, boolean withUpperSpaceCheck) throws DocumentationException
+    {
+        return sectionManager.isIncludedInExports(reference, withUpperSpaceCheck);
+    }
+
 
     /**
      * @throws DocumentationException if an error happens

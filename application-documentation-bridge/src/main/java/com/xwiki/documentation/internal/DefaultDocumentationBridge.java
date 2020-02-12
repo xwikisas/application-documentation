@@ -30,12 +30,11 @@ import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Role;
-import com.xwiki.documentation.DocumentationBridge;
-import com.xwiki.documentation.DocumentationException;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReferenceSerializer;
 import org.xwiki.model.reference.LocalDocumentReference;
+import org.xwiki.model.reference.SpaceReference;
 import org.xwiki.model.reference.WikiReference;
 import org.xwiki.text.StringUtils;
 
@@ -44,6 +43,8 @@ import com.xpn.xwiki.XWikiContext;
 import com.xpn.xwiki.XWikiException;
 import com.xpn.xwiki.doc.XWikiDocument;
 import com.xpn.xwiki.objects.BaseObject;
+import com.xwiki.documentation.DocumentationBridge;
+import com.xwiki.documentation.DocumentationException;
 
 /**
  * Default implementation for the {@link DocumentationBridge}.
@@ -189,19 +190,71 @@ public class DefaultDocumentationBridge implements DocumentationBridge
     }
 
     @Override
-    public boolean getIsIncludedInExports(DocumentReference documentReference) throws DocumentationException
+    public boolean getIsIncludedInExports(DocumentReference documentReference, boolean withUpperSpacesCheck)
+            throws DocumentationException
     {
         try {
             XWikiContext xContext = xContextProvider.get();
             XWiki xwiki = xContext.getWiki();
             XWikiDocument doc = xwiki.getDocument(documentReference, xContext);
+            if (withUpperSpacesCheck) {
+                // Check that all parent spaces are included
+                List<SpaceReference> spaceReferences = documentReference.getSpaceReferences();
+                for (SpaceReference spaceReference : spaceReferences) {
+                    boolean flag = getIsIncludedInExports(new DocumentReference("WebHome", spaceReference), false);
+                    if (!flag) {
+                        return false;
+                    }
+                }
+            }
 
             BaseObject obj = doc.getXObject(
                     new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+            if (obj == null) {
+                return true;
+            }
             return obj.getIntValue(IS_INCLUDED_IN_EXPORTS_PROPERTY, 1) == 1;
         } catch (XWikiException e) {
             throw new DocumentationException(
                     String.format("Failed to get isIncludedInExports boolean for document [%s].", documentReference));
+        }
+    }
+
+    /**
+     * @param documentReference a section
+     * @param propertyName either "previous" or "next"
+     * @return the previous or next included section
+     * @throws DocumentationException in case an error occurs
+     */
+    public DocumentReference getPreviousOrNextIncludedSection(DocumentReference documentReference, String propertyName)
+            throws DocumentationException
+    {
+        XWikiContext xContext = xContextProvider.get();
+        XWiki wiki = xContext.getWiki();
+
+        try {
+            XWikiDocument doc = wiki.getDocument(documentReference, xContext);
+            BaseObject obj = doc.getXObject(
+                    new DocumentReference(SECTION_CLASS, new WikiReference(xContext.getWikiId())));
+
+            if (obj != null) {
+                String previousOrNextSection = obj.getStringValue(propertyName);
+                if (StringUtils.isNotEmpty(previousOrNextSection)) {
+                    DocumentReference previousOrNextSectionReference = stringDocumentReferenceResolver.resolve(previousOrNextSection);
+                    if (getIsIncludedInExports(previousOrNextSectionReference, true)) {
+                        return previousOrNextSectionReference;
+                    } else {
+                        return getPreviousOrNextIncludedSection(previousOrNextSectionReference, propertyName);
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (XWikiException e) {
+            throw new DocumentationException(
+                    String.format("Failed to get previous / next included section for [%s].", documentReference));
         }
     }
 

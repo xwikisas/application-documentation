@@ -71,17 +71,25 @@ public class DefaultSectionManager implements SectionManager
     }
 
     @Override
-    public boolean isIncludedInExports(DocumentReference sectionReference) throws DocumentationException
+    public boolean isIncludedInExports(DocumentReference sectionReference, boolean withUpperSpacesCheck)
+            throws DocumentationException
     {
         if (isSection(sectionReference)) {
-            if (!documentationBridge.getIsIncludedInExports(sectionReference)) {
+            if (!documentationBridge.getIsIncludedInExports(sectionReference, withUpperSpacesCheck)) {
                 return false;
             } else {
                 DocumentReference parentSectionReference = documentationBridge.getParentSection(sectionReference);
-                return (parentSectionReference != null) ? isIncludedInExports(parentSectionReference) : true;
+                return (parentSectionReference != null)
+                        ? isIncludedInExports(parentSectionReference, withUpperSpacesCheck) : true;
             }
         } else {
             return true;
         }
+    }
+
+    @Override
+    public DocumentReference getPreviousOrNextIncludedSection(DocumentReference reference, String propertyName)
+            throws DocumentationException {
+        return documentationBridge.getPreviousOrNextIncludedSection(reference, propertyName);
     }
 }

@@ -39,9 +39,30 @@ public interface SectionManager
     boolean isSection(DocumentReference documentReference) throws DocumentationException;
 
     /**
+     * Checks whether the given reference is to be included in the export or not, optionally by checking recursively
+     * the parent spaces if parameter withUpperSpaceCheck is true. A page is excluded either if has a property
+     * "includeInExports" set to "false" or it is part of a space that is excluded.
+     *
      * @param documentReference the document to inspect
+     * @param withUpperSpaceCheck true if the upper spaces should be checked for inclusion
      * @return true if the given section should be included in exports.
      * @throws DocumentationException if an error happens
      */
-    boolean isIncludedInExports(DocumentReference documentReference) throws DocumentationException;
+    boolean isIncludedInExports(DocumentReference documentReference, boolean withUpperSpaceCheck)
+            throws DocumentationException;
+
+
+    /**
+     * Returns a document reference pointing at the previous or next section, taking into account the fact that not
+     * all sections are included in the export.
+     *
+     * @param reference a DocumentReference
+     * @param propertyName either 'previousSection' or 'nextSection'
+     * @return a reference to the previous or next section
+     * @throws DocumentationException in case an error occurs
+     */
+
+    DocumentReference getPreviousOrNextIncludedSection(DocumentReference reference, String propertyName)
+            throws DocumentationException;
+
 }

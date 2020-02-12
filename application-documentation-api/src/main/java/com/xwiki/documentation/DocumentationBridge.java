@@ -101,8 +101,20 @@ public interface DocumentationBridge
 
     /**
      * @param documentReference a reference to the section to inspect
+     * @param withUpperSpacesCheck true if upper spaces should be checked for inclusion
      * @return true if the section is included in exports, false otherwise
      * @throws DocumentationException if an error happens
      */
-    boolean getIsIncludedInExports(DocumentReference documentReference) throws DocumentationException;
+    boolean getIsIncludedInExports(DocumentReference documentReference, boolean withUpperSpacesCheck)
+            throws DocumentationException;
+
+    /**
+     * Gets the next or previous included section.
+     * @param documentReference a section
+     * @param propertyName either "previous" or "next"
+     * @return a reference to the previous or next section
+     * @throws DocumentationException in case an error occurs
+     */
+    DocumentReference getPreviousOrNextIncludedSection(DocumentReference documentReference, String propertyName)
+            throws DocumentationException;
 }
