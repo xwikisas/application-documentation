@@ -240,7 +240,8 @@ public class DefaultDocumentationBridge implements DocumentationBridge
             if (obj != null) {
                 String previousOrNextSection = obj.getStringValue(propertyName);
                 if (StringUtils.isNotEmpty(previousOrNextSection)) {
-                    DocumentReference previousOrNextSectionReference = stringDocumentReferenceResolver.resolve(previousOrNextSection);
+                    DocumentReference previousOrNextSectionReference =
+                            stringDocumentReferenceResolver.resolve(previousOrNextSection);
                     if (getIsIncludedInExports(previousOrNextSectionReference, true)) {
                         return previousOrNextSectionReference;
                     } else {

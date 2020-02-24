@@ -127,10 +127,10 @@ public class DocumentationScriptService implements ScriptService
      * @param reference a DocumentReference
      * @param withUpperSpaceCheck true if the parent spaces should be checked for inclusion
      * @return true if the given reference is configured as included in the export
-     * @throws Exception in case an error occurs
+     * @throws DocumentationException in case an error occurs
      */
-
-    public boolean isIncludedInExports(DocumentReference reference, boolean withUpperSpaceCheck) throws DocumentationException
+    public boolean isIncludedInExports(DocumentReference reference, boolean withUpperSpaceCheck)
+            throws DocumentationException
     {
         return sectionManager.isIncludedInExports(reference, withUpperSpaceCheck);
     }
