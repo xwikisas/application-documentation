@@ -25,10 +25,10 @@
   <parent>
     <groupId>com.xwiki.documentation</groupId>
     <artifactId>application-documentation</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
   </parent>
   <artifactId>application-documentation-bridge</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.2</version>
   <name>Documentation Application - Old Core Bridge</name>
   <description>Module that depends on the Old Core</description>
   <dependencies>
