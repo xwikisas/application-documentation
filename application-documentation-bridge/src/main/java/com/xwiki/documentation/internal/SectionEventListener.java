@@ -39,6 +39,7 @@ import com.xwiki.documentation.SectionParentManager;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
+import org.xwiki.model.reference.LocalDocumentReference;
 import org.xwiki.model.reference.SpaceReference;
 import org.xwiki.model.reference.WikiReference;
 import org.xwiki.observation.EventListener;
@@ -65,6 +66,10 @@ public class SectionEventListener implements EventListener
      * The name of the listener.
      */
     public static final String LISTENER_NAME = "DocumentationSection";
+
+    private static final LocalDocumentReference SECTION_TEMPLATE_REFERENCE =
+            new LocalDocumentReference(Arrays.asList("Documentation", "Code"),
+                    "SectionTemplate");
 
     @Inject
     private Logger logger;
@@ -116,7 +121,9 @@ public class SectionEventListener implements EventListener
                             DefaultDocumentationBridge.SECTION_CLASS,
                             new WikiReference(xContext.getWikiId()));
 
-            if (documentToUse.getXObjects(classReference).size() > 0) {
+            if (documentToUse.getXObjects(classReference).size() > 0
+                    && !documentToUse.getDocumentReference().getLocalDocumentReference()
+                        .equals(SECTION_TEMPLATE_REFERENCE)) {
                 if (event instanceof DocumentDeletedEvent) {
                     updateNextAndPreviousSections(documentToUse, classReference);
                     updateSpaceNumbering(documentToUse);
