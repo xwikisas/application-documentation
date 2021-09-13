@@ -59,14 +59,14 @@
   </developers>
   <distributionManagement>
     <repository>
-      <id>nexus.xwikisas.com-client-releases</id>
+      <id>nexus.xwikisas.com-public-store-releases</id>
       <name>XWiki SAS Maven2 Remote Repository for Releases</name>
-      <url>https://nexus.xwikisas.com/nexus/content/repositories/client-releases/</url>
+      <url>https://nexus.xwikisas.com/nexus/content/repositories/public-store-releases/</url>
     </repository>
     <snapshotRepository>
-      <id>nexus.xwikisas.com-client-snapshots</id>
+      <id>nexus.xwikisas.com-public-store-snapshots</id>
       <name>XWiki SAS Maven2 Remote Repository for Snapshots</name>
-      <url>https://nexus.xwikisas.com/nexus/content/repositories/client-snapshots/</url>
+      <url>https://nexus.xwikisas.com/nexus/content/repositories/public-store-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>  
   <modules>
