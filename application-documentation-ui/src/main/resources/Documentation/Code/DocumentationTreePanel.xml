@@ -126,7 +126,7 @@
   #panelheader($services.localization.render('documentation.panel.navigation.title'))
   ## Escape special characters in macro parameter values.
   #set ($openToDoc = $doc.documentReference.toString().replaceAll('([~"])', '~$1'))
-  {{tree reference="Documentation.Code.DocumentationTreeSource" root="document:Documentation.WebHome" icons="false" openTo="document:$openToDoc" links="true" /}}
+  {{tree reference="Documentation.Code.DocumentationTreeSource" root="document:Documentation.WebHome" edges="false" icons="false" openTo="document:$openToDoc" links="true" /}}
   #panelfooter()
 {{/velocity}}</content>
     </property>
