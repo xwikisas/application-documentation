@@ -25,10 +25,10 @@
   <parent>
     <groupId>com.xwiki.documentation</groupId>
     <artifactId>application-documentation</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.5.1</version>
   </parent>
   <artifactId>application-documentation-api</artifactId>
-  <version>1.6-SNAPSHOT</version>
+  <version>1.5.1</version>
   <name>Documentation Application - API</name>
   <dependencies>
     <dependency>
