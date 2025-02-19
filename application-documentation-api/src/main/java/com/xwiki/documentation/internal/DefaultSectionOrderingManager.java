@@ -31,10 +31,12 @@ import javax.inject.Singleton;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xwiki.component.annotation.Component;
+
 import com.xwiki.documentation.DocumentationBridge;
 import com.xwiki.documentation.DocumentationException;
 import com.xwiki.documentation.SectionManager;
 import com.xwiki.documentation.SectionOrderingManager;
+
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.DocumentReferenceResolver;
 import org.xwiki.model.reference.EntityReference;
@@ -83,7 +85,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
 
     @Override
     public void computePreviousAndNextSections(DocumentReference documentReference)
-            throws DocumentationException
+        throws DocumentationException
     {
         DocumentReference previousSection = computePreviousSection(documentReference);
         DocumentReference nextSection = computeNextSection(documentReference);
@@ -93,7 +95,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
 
     @Override
     public DocumentReference computePreviousSection(DocumentReference documentReference)
-            throws DocumentationException
+        throws DocumentationException
     {
         // We get the previous section in the current space
         DocumentReference previousSiblingReference = getSectionInSpace(SiblingPosition.PREVIOUS, documentReference);
@@ -102,14 +104,13 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
             // First case, we don't have any previous sibling, this would mean that our previous section should be
             // the parent of the current section
             DocumentReference parentDocumentReference =
-                    new DocumentReference(WEB_HOME, (SpaceReference) documentReference.getParent().getParent());
+                new DocumentReference(WEB_HOME, (SpaceReference) documentReference.getParent().getParent());
             if (sectionManager.isSection(parentDocumentReference)) {
                 return parentDocumentReference;
             } else {
                 // We're out of the documentation
                 return null;
             }
-
         } else if (previousSiblingReference.getParent() instanceof SpaceReference) {
             // In that case, we try to get the latest subsection of the previous section
             List<Object[]> children = getDocumentChildren(previousSiblingReference);
@@ -125,8 +126,8 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                     int spaceDifference = reference.getSpaceReferences().size() - referenceSRSize;
 
                     List<Pair<DocumentReference, Long>> matrixEntry = resultsMatrix.getOrDefault(
-                            spaceDifference,
-                            new ArrayList<>());
+                        spaceDifference,
+                        new ArrayList<>());
                     matrixEntry.add(new ImmutablePair<>(reference, (long) result[1]));
                     resultsMatrix.put(spaceDifference, matrixEntry);
                 }
@@ -135,18 +136,17 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
             }
         } else {
             throw new DocumentationException(String.format(
-                    "The parent of [%s] is not a space reference : [%s]",
-                    previousSiblingReference, previousSiblingReference.getParent()));
+                "The parent of [%s] is not a space reference : [%s]",
+                previousSiblingReference, previousSiblingReference.getParent()));
         }
     }
 
     @Override
     public DocumentReference computeNextSection(DocumentReference documentReference)
-            throws DocumentationException
+        throws DocumentationException
     {
         // We need to get the first child.
         int referenceSRSize = documentReference.getSpaceReferences().size();
-
 
         List<Object[]> children = getDocumentChildren(documentReference);
 
@@ -171,24 +171,25 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                 if (nextSectionReference == null) {
                     // Go up one level
                     currentReference =
-                            new DocumentReference(WEB_HOME,
-                                    (SpaceReference) currentReference.getParent().getParent());
+                        new DocumentReference(WEB_HOME,
+                            (SpaceReference) currentReference.getParent().getParent());
                 }
             } while (nextSectionReference == null
-                    && sectionManager.isSection(currentReference)
-                    && currentReference.getSpaceReferences().size() > 0);
+                && sectionManager.isSection(currentReference)
+                && currentReference.getSpaceReferences().size() > 0);
 
             return nextSectionReference;
         }
     }
 
     private DocumentReference getSectionInSpace(SiblingPosition position, DocumentReference documentReference)
-            throws DocumentationException {
+        throws DocumentationException
+    {
         if (sectionManager.isSection(documentReference)) {
             long sectionNumbering =
-                    (position == SiblingPosition.PREVIOUS)
-                            ? documentationBridge.getNumbering(documentReference) - 1
-                            : documentationBridge.getNumbering(documentReference) + 1;
+                (position == SiblingPosition.PREVIOUS)
+                    ? documentationBridge.getNumbering(documentReference) - 1
+                    : documentationBridge.getNumbering(documentReference) + 1;
 
             EntityReference parentSpace = documentReference.getParent().getParent();
             if (parentSpace instanceof SpaceReference) {
@@ -197,21 +198,21 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
 
                 try {
                     String hqlQuery = "select obj.name "
-                            + "from BaseObject obj, LongProperty numbering, StringProperty parent "
-                            + "where obj.className =  'Documentation.Code.SectionClass' "
-                            + "and numbering.id.id = obj.id "
-                            + "and numbering.id.name = 'numbering' "
-                            + "and parent.id.id = obj.id "
-                            + "and parent.id.name = 'parentSection' "
-                            + "and numbering.value = :expectedNumbering "
-                            + "and parent.value = :parentReference "
-                            // Exclude everything from the code space
-                            + "and obj.name not like 'Documentation.Code.%'";
+                        + "from BaseObject obj, LongProperty numbering, StringProperty parent "
+                        + "where obj.className =  'Documentation.Code.SectionClass' "
+                        + "and numbering.id.id = obj.id "
+                        + "and numbering.id.name = 'numbering' "
+                        + "and parent.id.id = obj.id "
+                        + "and parent.id.name = 'parentSection' "
+                        + "and numbering.value = :expectedNumbering "
+                        + "and parent.value = :parentReference "
+                        // Exclude everything from the code space
+                        + "and obj.name not like 'Documentation.Code.%'";
 
                     List<String> results = queryManager.createQuery(hqlQuery, Query.HQL)
-                            .bindValue("expectedNumbering", sectionNumbering)
-                            .bindValue("parentReference", entityReferenceSerializer.serialize(parentReference))
-                            .execute();
+                        .bindValue("expectedNumbering", sectionNumbering)
+                        .bindValue("parentReference", entityReferenceSerializer.serialize(parentReference))
+                        .execute();
 
                     if (results.size() >= 1) {
                         for (String result : results) {
@@ -226,24 +227,23 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                     } else {
                         return null;
                     }
-
                 } catch (QueryException e) {
                     throw new DocumentationException(
-                            String.format("Failed to get the [%s] section in space [%s]", position, parentSpace), e);
+                        String.format("Failed to get the [%s] section in space [%s]", position, parentSpace), e);
                 }
             } else {
                 throw new DocumentationException("Creating a documentation at the root of the wiki is currently "
-                        + "not supported, please create your documentation in a space.");
+                    + "not supported, please create your documentation in a space.");
             }
-
         } else {
             throw new DocumentationException(
-                    String.format("The document [%s] has no numbering.", documentReference));
+                String.format("The document [%s] has no numbering.", documentReference));
         }
     }
 
     private DocumentReference getLastSection(int level,
-            List<SpaceReference> spaces, Map<Integer, List<Pair<DocumentReference, Long>>> matrix) {
+        List<SpaceReference> spaces, Map<Integer, List<Pair<DocumentReference, Long>>> matrix)
+    {
 
         if (matrix.keySet().contains(level)) {
             // Consider the current level
@@ -265,7 +265,7 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
                 return null;
             } else {
                 DocumentReference subtreeTest = getLastSection(level + 1,
-                        bestNumberingReference.getSpaceReferences(), matrix);
+                    bestNumberingReference.getSpaceReferences(), matrix);
 
                 if (subtreeTest == null) {
                     return bestNumberingReference;
@@ -285,20 +285,20 @@ public class DefaultSectionOrderingManager implements SectionOrderingManager
 
             // Select every child elements of this space
             String hqlQuery = "select subSectionObject.name, subSectionNumbering.value "
-                    + "from BaseObject subSectionObject, LongProperty subSectionNumbering "
-                    + "where subSectionObject.className = 'Documentation.Code.SectionClass' "
-                    + "and subSectionNumbering.id.id = subSectionObject.id "
-                    + "and subSectionNumbering.id.name = 'numbering' "
-                    + "and subSectionObject.name like :parentSpace "
-                    // Exclude everything from the code space
-                    + "and subSectionObject.name not like 'Documentation.Code.%'";
+                + "from BaseObject subSectionObject, LongProperty subSectionNumbering "
+                + "where subSectionObject.className = 'Documentation.Code.SectionClass' "
+                + "and subSectionNumbering.id.id = subSectionObject.id "
+                + "and subSectionNumbering.id.name = 'numbering' "
+                + "and subSectionObject.name like :parentSpace "
+                // Exclude everything from the code space
+                + "and subSectionObject.name not like 'Documentation.Code.%'";
             return queryManager.createQuery(hqlQuery, Query.HQL)
-                    .bindValue("parentSpace",
-                            String.format(SPACE_FILTER_FORMAT,
-                                    entityReferenceSerializer.serialize(spaceReference))).execute();
+                .bindValue("parentSpace",
+                    String.format(SPACE_FILTER_FORMAT,
+                        entityReferenceSerializer.serialize(spaceReference))).execute();
         } catch (QueryException e) {
             throw new DocumentationException(
-                    String.format("Failed to get the children of the document [%s]", documentReference), e);
+                String.format("Failed to get the children of the document [%s]", documentReference), e);
         }
     }
 }

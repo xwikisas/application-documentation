@@ -59,20 +59,20 @@ public class DefaultSectionManager implements SectionManager
     {
         try {
             String hqlQuery = "select sectionObject.name from BaseObject sectionObject "
-                    + "where sectionObject.className = 'Documentation.Code.SectionClass' "
-                    + "and sectionObject.name = :docName";
+                + "where sectionObject.className = 'Documentation.Code.SectionClass' "
+                + "and sectionObject.name = :docName";
             return queryManager.createQuery(hqlQuery, Query.HQL)
-                    .bindValue("docName", entityReferenceSerializer.serialize(documentReference))
-                    .execute().size() > 0;
+                .bindValue("docName", entityReferenceSerializer.serialize(documentReference))
+                .execute().size() > 0;
         } catch (QueryException e) {
             throw new DocumentationException(
-                    String.format("Failed to verify if document [%s] is a section.", documentReference), e);
+                String.format("Failed to verify if document [%s] is a section.", documentReference), e);
         }
     }
 
     @Override
     public boolean isIncludedInExports(DocumentReference sectionReference, boolean withUpperSpacesCheck)
-            throws DocumentationException
+        throws DocumentationException
     {
         if (isSection(sectionReference)) {
             if (!documentationBridge.getIsIncludedInExports(sectionReference, withUpperSpacesCheck)) {
@@ -80,7 +80,7 @@ public class DefaultSectionManager implements SectionManager
             } else {
                 DocumentReference parentSectionReference = documentationBridge.getParentSection(sectionReference);
                 return (parentSectionReference != null)
-                        ? isIncludedInExports(parentSectionReference, withUpperSpacesCheck) : true;
+                    ? isIncludedInExports(parentSectionReference, withUpperSpacesCheck) : true;
             }
         } else {
             return true;
@@ -89,7 +89,8 @@ public class DefaultSectionManager implements SectionManager
 
     @Override
     public DocumentReference getPreviousOrNextIncludedSection(DocumentReference reference, String propertyName)
-            throws DocumentationException {
+        throws DocumentationException
+    {
         return documentationBridge.getPreviousOrNextIncludedSection(reference, propertyName);
     }
 }

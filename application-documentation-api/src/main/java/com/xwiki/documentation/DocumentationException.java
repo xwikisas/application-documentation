@@ -29,6 +29,7 @@ public class DocumentationException extends Exception
 {
     /**
      * Construct a DocumentationException.
+     *
      * @param message the detail message
      */
     public DocumentationException(String message)
@@ -38,6 +39,7 @@ public class DocumentationException extends Exception
 
     /**
      * Construct a DocumentationException.
+     *
      * @param message the detail message
      * @param cause the cause
      */

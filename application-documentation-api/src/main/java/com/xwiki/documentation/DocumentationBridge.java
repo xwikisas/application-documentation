@@ -35,6 +35,7 @@ public interface DocumentationBridge
 {
     /**
      * Get the numbering of the given document.
+     *
      * @param documentReference the document to use.
      * @return the numbering
      * @throws DocumentationException if something goes wrong (ie : the document has no SectionClass, for example)
@@ -51,8 +52,8 @@ public interface DocumentationBridge
     void setNumbering(DocumentReference documentReference, long numbering) throws DocumentationException;
 
     /**
-     * Will set the previous / next sections of the given document to new values.
-     * If the sections are null, then the property will be set as blank.
+     * Will set the previous / next sections of the given document to new values. If the sections are null, then the
+     * property will be set as blank.
      *
      * @param documentReference the document to update
      * @param previousSection the previous section
@@ -60,7 +61,7 @@ public interface DocumentationBridge
      * @throws DocumentationException if an error happens
      */
     void setPreviousAndNextSections(DocumentReference documentReference, DocumentReference previousSection,
-            DocumentReference nextSection) throws DocumentationException;
+        DocumentReference nextSection) throws DocumentationException;
 
     /**
      * Will set the previous section of the given document to a new value.
@@ -70,7 +71,7 @@ public interface DocumentationBridge
      * @throws DocumentationException if an error happens
      */
     void setPreviousSection(DocumentReference documentReference, DocumentReference previousSection)
-            throws DocumentationException;
+        throws DocumentationException;
 
     /**
      * Will set the next section of the given document to a new value.
@@ -80,11 +81,11 @@ public interface DocumentationBridge
      * @throws DocumentationException if an error happens
      */
     void setNextSection(DocumentReference documentReference, DocumentReference nextSection)
-            throws DocumentationException;
+        throws DocumentationException;
 
     /**
-     * Will set the parent section of the given document to the given parentSection. If the parentSection is null,
-     * then the property will be set as blank.
+     * Will set the parent section of the given document to the given parentSection. If the parentSection is null, then
+     * the property will be set as blank.
      *
      * @param documentReference the document to use
      * @param parentSection the document parent section
@@ -106,15 +107,16 @@ public interface DocumentationBridge
      * @throws DocumentationException if an error happens
      */
     boolean getIsIncludedInExports(DocumentReference documentReference, boolean withUpperSpacesCheck)
-            throws DocumentationException;
+        throws DocumentationException;
 
     /**
      * Gets the next or previous included section.
+     *
      * @param documentReference a section
      * @param propertyName either "previous" or "next"
      * @return a reference to the previous or next section
      * @throws DocumentationException in case an error occurs
      */
     DocumentReference getPreviousOrNextIncludedSection(DocumentReference documentReference, String propertyName)
-            throws DocumentationException;
+        throws DocumentationException;
 }

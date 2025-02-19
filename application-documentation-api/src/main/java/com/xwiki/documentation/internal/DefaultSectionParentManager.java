@@ -23,9 +23,11 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import org.xwiki.component.annotation.Component;
+
 import com.xwiki.documentation.DocumentationBridge;
 import com.xwiki.documentation.DocumentationException;
 import com.xwiki.documentation.SectionParentManager;
+
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.SpaceReference;
@@ -54,12 +56,9 @@ public class DefaultSectionParentManager implements SectionParentManager
             DocumentReference parentReference = new DocumentReference("WebHome", (SpaceReference) parent);
 
             documentationBridge.setParent(documentReference, parentReference);
-
         } else {
             // In that case (wiki level), just set a null reference.
             documentationBridge.setParent(documentReference, null);
         }
-
-
     }
 }
